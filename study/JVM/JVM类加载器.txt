@@ -1,0 +1,41 @@
+JVM 类加载器
+
+Bootstrap Classloader 加载jre 类库（C++）
+Extensioin Classloader 加载ext 扩展（Java） 
+Application ClassLoader 加载当前工程类库 （Java）
+
+双亲委派机制
+
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return loadClass(name, false);
+    }
+    //              -----👇👇-----
+    protected Class<?> loadClass(String name, boolean resolve)
+        throws ClassNotFoundException
+    {
+            // First, check if the class has already been loaded
+            Class<?> c = findLoadedClass(name);
+            if (c == null) {
+                try {
+                    if (parent != null) {
+						// 调一层递归 检查Bootstrap ClassLoader
+                        c = parent.loadClass(name, false);
+                    } else {
+                        c = findBootstrapClassOrNull(name);
+                    }
+                } catch (ClassNotFoundException e) {
+                    // ClassNotFoundException thrown if class not found
+                    // from the non-null parent class loader
+                }
+ 
+                if (c == null) {
+                    // If still not found, then invoke findClass in order
+                    // to find the class.
+                    c = findClass(name);
+                }
+            }
+            return c;
+    }
+
+
+https://blog.csdn.net/codeyanbao/article/details/82875064
