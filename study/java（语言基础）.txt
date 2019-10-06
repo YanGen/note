@@ -1,4 +1,15 @@
-
+基本数据类型：
+	
+数据类型					默认值
+byte					0
+short					0
+int						0
+long					0L
+float					0.0f
+double					0.0d
+char					'u0000'
+String (or any object)	null
+boolean					false
 
 
 Java程序初始化的执行顺序：
