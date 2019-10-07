@@ -3,6 +3,13 @@
 		封装：  一个类封装了数据以及操作数据的代码逻辑体。定义了数据的可访问属性（私有、公有）
 		继承 ： 可以让一个类型获取另外一个类型的属性的方式。分为实现继承和接口继承
 		多态 ： 类实例的一个方法在不同情形下有不同的表现形式，即不同的外在行为。使具有不同的内部结构的对象可以共享相同的外部接口。
+	六大原则:
+		单一职责原则 SRP (Single Responsibility Principle) 一个类仅负责一项职责。
+		开放封闭原则 OCP (Open－Close Principle) 对扩展是开放的，而对修改是封闭。
+		里式替换原则 LSP (the Liskov Substitution Principle LSP) 子类必须完全实现父类的方法，子类可以有自己的个性。
+		依赖倒置原则 DIP (the Dependency Inversion Principle DIP) 高层模块不应该依赖低层模块，细节依赖抽象。 依赖倒置原则更加精简的理解就是“面向接口编程”
+		接口分离原则 ISP (the Interface Segregation Principle ISP)  建立单一接口，不要建立庞大臃肿的接口，尽量细化接口
+		迪米特原则 LOD (Law of Demeter) 使各个模块之间的耦合尽量的低，才能提高代码的复用率。
 
 2.final、finally与finalize的区别
 	final:
@@ -24,22 +31,17 @@
 		在Object中比较的是对象的地址，String、Integer、Long很多封装类重写了equals方法，相对地址进行比较、如果地址不同再对内容进行比较。
 	hashCode是Object类的本地方法，返回对象和的内存地址处理后的结构。同样的许多封装类也重写了hashCode()的方法。
 
- equals和hashCode的区别和联系
-set集合是无序的，因此是不能重复的，那么怎么能保证不能被放入重复的元素呢，单靠equals方法进行比较的话，如果原来集合中以后又10000个元素了，那么放入10001个元素，难道要将前面的所有元素都进行比较，看看是否有重复，欧码噶的，这个效率可想而知，因此hashcode 就应遇而生了。
+	equals和hashCode的区别和联系
+	set集合是无序的，因此是不能重复的，那么怎么能保证不能被放入重复的元素呢，单靠equals方法进行比较的话，如果原来集合中以后又10000个元素了，那么放入10001个元素，难道要将前面的所有元素都进行比较，看看是否有重复，欧码噶的，这个效率可想而知，因此hashcode 就应遇而生了。
 
-所有对于需要大量并且快速的对比的话如果都用equal()去做显然效率太低，所以解决方式是，每当需要对比的时候，首先用hashCode()去对比，如果hashCode()不一样，则表示这两个对象肯定不相等（也就是不必再用equal()去再对比了）,如果hashCode()相同，此时再对比他们的equal()，如果equal()也相同，则表示这两个对象是真的相同了，这样既能大大提高了效率也保证了对比的绝对正确性！
+	所有对于需要大量并且快速的对比的话如果都用equal()去做显然效率太低，所以解决方式是，每当需要对比的时候，首先用hashCode()去对比，如果hashCode()不一样，则表示这两个对象肯定不相等（也就是不必再用equal()去再对比了）,如果hashCode()相同，此时再对比他们的equal()，如果equal()也相同，则表示这两个对象是真的相同了，这样既能大大提高了效率也保证了对比的绝对正确性！
 
-通常如果重写了equals方法，也需要重写hashCode方法，并且要保证equals方法返回true时，hashCode()返回的值要相同。
+	通常如果重写了equals方法，也需要重写hashCode方法，并且要保证equals方法返回true时，hashCode()返回的值要相同。
 
-作者：KamiaMirage
-链接：https://www.nowcoder.com/discuss/294764?type=2&order=0&pos=1&page=1
-来源：牛客网
 
-简单说说面向对象的特征以及六大原则
-谈谈final、finally、finalize的区别
-Java中==、equals与hashCode的区别和联系
-谈谈Java容器ArrayList、LinkedList、HashMap、HashSet的理解，以及应用场景
-谈谈线程的基本状态，其中的wait() sleep()  yield()方法的区别。
+4.Java容器ArrayList、LinkedList、HashMap、HashSet的理解，以及应用场景
+
+5.线程的基本状态，其中的wait() sleep()  yield()方法的区别。
 
 二面（下午）相对来说比较深一点：
 JVM性能调优的监控工具了解那些？
