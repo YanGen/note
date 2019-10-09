@@ -18,7 +18,7 @@
 		final修饰方法时，方法不能被重写。
 		final成员变量表示常量，只能被赋值一次，赋值后其值不再改变。类似于C++中的const。
 	finally:
-		finally作为异常处理的一部分，它只能用在try/catch语句中，并且附带一个语句块，表示这段语句最终一定会被执行（不管有没有抛出异常,只要try块执行且不手动终止虚拟机finally就会执行,r如果try块存在return,那么finally撤销之前的return语句，继续执行最后的finally块中的代码。），经常被用在需要释放资源的情况下。
+		finally作为异常处理的一部分，它只能用在try/catch语句中，并且附带一个语句块，表示这段语句最终一定会被执行（不管有没有抛出异常,只要try块执行且不手动终止虚拟机finally就会执行,如果try块存在return,那么finally撤销之前的return语句，继续执行最后的finally块中的代码。），经常被用在需要释放资源的情况下。
 	finalize:
 		finalize()是在java.lang.Object里定义的，也就是说每一个对象都有这么个方法。这个方法在gc启动，该对象被回收的时候被调用。
 3.==、equals和hashCode

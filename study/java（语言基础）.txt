@@ -11,6 +11,9 @@ char					'u0000'
 String (or any object)	null
 boolean					false
 
+- 原始类型: boolean，char，     byte，short，int，    long，float，double
+- 包装类型：Boolean，Character，Byte，Short，Integer，Long，Float，Double
+
 
 Java程序初始化的执行顺序：
 	父类静态代码块，父类静态成员变量（同级，按代码顺序执行）
@@ -31,3 +34,15 @@ int s=(i++)+(++i)+(i--)+(--i); // 5+7+7+5 = 24
 线程stop方法已经被弃用
 守护线程在非守护线程结束后，会自动结束
 等待其他线程通知方法是wait()
+
+String 和StringBuffer的区别
+	String和StringBuffer，它们可以储存和操作字符串，即包含多个字符的字符数据。这个String类提供了数值不可改变的字符串。而这个StringBuffer类提供的字符串进行修改。当你知道字符数据要改变的时候你就可以使用StringBuffer。典型地，你可以使用StringBuffers来动态构造字符数据。
+
+Syncronized锁，如果用这个关键字修饰一个静态方法，锁住了什么？如果修饰成员方法，锁住了什么？
+	synchronized修饰静态方法以及同步代码块的synchronized (类.class)用法锁的是类，线程想要执行对应同步代码，需要获得类锁。
+	synchronized修饰成员方法，线程获取的是当前调用该方法的对象实例的对象锁。
+
+Overload和Override的区别，Overloaded的方法是否可以改变返回值的类型?
+	重写Overrid是父类与子类之间多态性的一种表现，重载Overload是一个类中多态性的一种表现。方法的重写Overrid和重载Overload是Java多态性的不同表现。
+StringBuffer和StringBuilder有什么区别，底层实现上呢？
+	StringBuffer线程安全，StringBuilder线程不安全，底层实现上的话，StringBuffer其实就是比StringBuilder多了Synchronized修饰符。
