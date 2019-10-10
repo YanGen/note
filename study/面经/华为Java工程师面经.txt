@@ -47,6 +47,15 @@
 		1）如果程序对数据又较多的随机访问，ArrayList要优于LinkedList
 		2）如果应用程序有更多的插入或者删除操作，较少的数据读取，LinkedList对象要优于ArrayList对象
 		3）如果有特殊情况 比如程序总是在靠近末尾的地方插入，那么ArrayList的插入删除不一定比LinkedList慢。
+
+	HashMap的实现原理：
+	1.利用key的hashCode重新hash计算出当前对象的元素在数组中的下标
+	2.存储时，如果出现hash值相同的key，此时有两种情况。
+		(1)如果key相同，则覆盖原始值；
+		(2)如果key不同（出现冲突），则将当前的key-value放入链表中
+	3.获取时，直接找到hash值对应的下标，在进一步判断key是否相同，从而找到对应值。
+	4.理解了以上过程就不难明白HashMap是如何解决hash冲突的问题，核心就是使用了数组的存储方式，然后将冲突的key的对象放入链表中，一旦发现冲突就在链表中做进一步的对比。
+
 	②HashMap和Hashtable的区别
 		HashMap和Hashtable都实现了Map接口，主要的区别有：线程安全性，同步(synchronization)，以及速度。HashMap几乎可以等价于Hashtable，除了HashMap是非synchronized的，并可以接受null(HashMap可以接受为null的键值(key)和值(value)，而Hashtable则不行)。
 		HashMap是非synchronized，而Hashtable是synchronized，意味着Hashtable是线程安全的，多个线程可以共享一个Hashtable；而多个线程是不能共享HashMap的。Java 5提供了ConcurrentHashMap，它是HashTable的替代，比HashTable的扩展性更好。
