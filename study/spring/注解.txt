@@ -1,0 +1,33 @@
+1.@Configuration注解
+	该类等价 与XML中配置beans，相当于Ioc容器，它的某个方法头上如果注册了@Bean，就会作为这个Spring容器中的Bean，与xml中配置的bean意思一样。
+
+2.@ComponentScan
+	value  指定要扫描的包。
+	includeFilters 指定扫描的时候只需要包含哪些组件；
+	excludeFilters 指定扫描的时候按照什么规则排除那些组件；
+	它们两个都是一个Filter[]，在上面的代码中也有，Filter中有个FilterType，它是一个枚举类，有5种类型。
+	FilterType.ANNOTATION：按照注解
+	FilterType.ASSIGNABLE_TYPE：按照给定的类型；
+	FilterType.ASPECTJ：使用ASPECTJ表达式
+	FilterType.REGEX：使用正则指定
+	FilterType.CUSTOM：使用自定义规则
+
+3.@Controller, @Service, @Repository,@Component 
+	这四个用法没有区别,但是习惯上 ,但是@Controller：一般用于表现层的注解。 @Service：一般用于业务层的注解。 @Repository：一般用于持久层的注解。
+
+4.@PostConstruct 和 @PreDestory 
+	实现初始化和销毁bean之前进行的操作，只能有一个方法可以用此注释进行注释，方法不能有参数，返回值必需是void,方法需要是非静态的。
+		public class TestService {   
+  
+		    @PostConstruct    
+		    public void  init(){    
+		        System.out.println(“初始化”);    
+		    }    
+		        
+		    @PreDestroy    
+		    public void  dostory(){    
+		        System.out.println(“销毁”);    
+		    }    
+		} 
+
+5.
