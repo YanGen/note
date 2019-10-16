@@ -52,4 +52,8 @@
 	使用@Qualifier指定需要装配的组件的id。
 	例如：当你有两个相同类型的service时，为@Service("userService1")，@Service("userService2");然后你
 	@Autowired注解了private UserService userService；这样子Spring不知道你需要哪个service，所以你可以在userService上加上@Qualifier("userService1")与自动注入搭配使用。
-11.
+11.@Singleton
+	只要在类上加上这个注解，就可以实现一个单例类，不需要自己手动编写单例实现类。
+
+12.@Valid,@Valided
+	请求校检，详细百度。
