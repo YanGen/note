@@ -1,0 +1,33 @@
+
+
+[kiosk@foundation72 ~]$ 
+ 1      2      3    4 5
+1:运行shell的用户；2:分割符号；3:主机的短名称；4:所在当前主机的位置；5:身份提示符号， $表示普通用户，#表示超级用户
+
+[kiosk@foundation72 ~]$ su - root
+Password: 
+Last login: Mon Apr  1 20:31:12 CST 2019 on pts/0
+[root@foundation72 ~]# 
+用户切换到root时，命令行提示符的用户改为root
+
+cd 目录名称  #进入到指定目录中
+cd -  #当前目录和当前目录值前所在目录之间的切换
+cd ~  #进入当前用户家目录
+cd ~user  #进入user家目录
+cd …   #进入当前目录的上级目录
+
+[kiosk@foundation72 ~]$ pwd      显示当前所在位置
+/home/kiosk                      普通用户user的家目录,/home/user
+[kiosk@foundation72 ~]$ cd Desktop       切换到桌面，相对路径
+[kiosk@foundation72 Desktop]$ pwd        显示当前路径
+/home/kiosk/Desktop                      自动加上pwd显示的值
+[kiosk@foundation72 Desktop]$ cd ~       切换到家目录
+[kiosk@foundation72 ~]$ pwd
+/home/kiosk
+[kiosk@foundation72 ~]$ cd -             和之前所在目录间切换    
+/home/kiosk/Desktop
+[kiosk@foundation72 Desktop]$ cd ..      切换到上一级目录
+[kiosk@foundation72 ~]$ pwd
+/home/kiosk
+[kiosk@foundation72 ~]$ cd /mnt          切换到mnt目录，绝对路径
+[kiosk@foundation72 mnt]$ 
