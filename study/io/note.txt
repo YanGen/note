@@ -1,1 +1,33 @@
-note.txt
+Input 和Output - 源代码和目标
+	专业术语“input”和“output”有时候会有一些概念上的模糊。一个应用程序的输入部分往往是另一个部分的输出。OutputStream是一个流被写出去，还是从一个地方写进来？归根结底，OutputStream是把数据写入到读取的程序，不是么？以我个人经历发现，第一次学习Java IO的时候这些会让我有一些困惑。
+	为了解决这些困惑，我曾经尝试在input和output上添加一些不同的名称，希望让从哪里输入的，输出到哪里，有一些概念上的联系。
+	Java的IO包本身的主要关注点在于，从一个地方读取原始数据和向目的地写入数据。最典型的数据来源和目的地主要有：
+
+	文件（File）
+	管道（Pipes）
+	网络连接（Network Connections）
+	内存缓冲区，比如数组（In-memory Buffers）
+	System.in, System.out, System.error
+
+
+流
+	IO流是Java IO的核心概念。流是一个概念上的无休止的数据流。你既可以从一个流读取数据也可以写入到一个流。流用来连接数据源与目标地。Java IO流基于字节流和字符流。
+
+InputStream, OutputStream, Reader and Writer
+	一个程序从数据源读取数据的时候，需要 InputStream或者Reader。程序写数据的时候，就需要OutputStream或Writer。
+
+Java IO的目的和特性
+	Java IO中有很多InputStream, OutputStream, Reader和Writer的子类，这些子类会用来处理不同的需求。这就是为什么有这么多类的原因。具体的用法主要有以下一些场景：
+
+	文件
+	网络流
+	内存缓冲区
+	管道
+	缓冲
+	过滤
+	解析
+	读写文本
+	读写原始类型的数据（long等等）
+	读写对象
+	上面的这些可以让你在阅读Java IO相关类的时候清晰一些。更能理解这些类的目的都是什么。
+
