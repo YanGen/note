@@ -1,0 +1,63 @@
+	1、下载镜像
+
+	$ docker pull centos 
+
+	2、查看已经下载的镜像
+
+	$ docker images
+	    REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+	    centos              latest              49f7960eb7e4        6 weeks ago         200MB
+	    hello-world         latest              f2a91732366c        8 months ago        1.85kB
+
+	3、运行一个镜像并生成容器
+
+		//运行一个centos镜像，并执行/bin/bash命令
+		$ docker run centos /bin/bash
+
+
+		输入命令docker ps或者docker container ls查看运行中的容器，发现列表为空，原因是容器在执行完成命令后会自动退出，下面介绍让让容器停留在后台的方法
+
+		$ docker ps
+		    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+		    
+		$ docker container ls
+		    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+
+		使用命令docker ps -a或者docker container ls -a 查看所用容器,并显示了容器的状态
+
+		$ docker ps -a
+		CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
+		5525373371f3        centos              "/bin/bash"         7 minutes ago       Exited (0) 7 minutes ago                        nifty_rosalind
+
+docker 让镜像运行停留在后台
+	1、启动一个容器并后台运行
+
+	docker run命令 通过增加-i -t参数可以让容器并进入容器
+
+	docker run -i -t centos /bin/bash
+
+
+	按 Ctrl + P + Q 退出容器，再用 docker ps 进行查看
+
+	$ docker ps
+	CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+	61b041e4e063        centos              "/bin/bash"         3 minutes ago       Up 3 minutes                            nervous_saha
+
+	状态显示仍在运行中
+
+docker 进入一个运行的容器
+	$ docker ps
+	CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+	36afde543eb5        mysql:5.7           "docker-entrypoint.s…"   About an hour ago   Up About an hour    0.0.0.0:3306->3306/tcp   mymysql
+
+	$ docker exec -it 36afde543eb5 /bin/bash
+
+
+	-i 保持STDIN打开 -t 分配一个虚拟TTY窗口
+docker 映射文件从宿主机到容器,端口号映射
+	//将宿主机的81端口映射到容器的80端口
+	//将宿主机的/develop/data卷，映射到容器的/data卷
+
+	$ docker run -i -t -p 81:80 -v /develop/data:/data  centos /bin/bash
+	-p:映射端口号 -v:磁盘目录映射
