@@ -1,9 +1,10 @@
 启动
-	docker run --name nginx-rtmp -p 1935:1935 -p 808
-0:80  -v /docker/nginx-rtmp/conf/nginx.conf:/opt/nginx/nginx.conf  -v /docker/nginx-r
-tmp/log:/opt/nginx/log/nginx --rm alfg/nginx-rtmp
+	docker run --name nginx-rtmp -p 1935:1935 -p 8080:80  -v /docker/nginx-rtmp/conf/nginx.conf:/opt/nginx/nginx.conf  -v /docker/nginx-rtmp/log:/opt/nginx/log/nginx --rm alfg/nginx-rtmp
 
+关闭 
+	docker stop id
 
 重启
 	docker exec -it nginx-rtmp /opt/nginx/sbin/nginx -s reload
 
+按 Ctrl + P + Q 退出容器 后台运行
