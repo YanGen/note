@@ -36,3 +36,40 @@ Java IO的目的和特性
 
 根据Java IO写文件
 	如果你想从一端写一个文件到另一端，你可以用FileOutputStream或者FileWriter，这取决于你是想根据字节还是字符来写。这两个类每次写入一个字节或者一个字符来写完整个文件，或者将字节或字符放入到字节数组或字符数组中来写。数据会按顺序存储到文件当中。
+
+通过InputStream或Reader读数组
+	去写一个从数组读取数据的组件，你需要用ByteArrayInputStream或CharArrayReader包装一下字节或字符数组。这样，数组中的字节或字符就可以通过包装的stream或reader来读取了。
+
+		byte[] bytes = new byte[1024];
+
+		//write data into byte array...
+
+		InputStream input = new ByteArrayInputStream(bytes);
+
+		//read first byte
+		int data = input.read();
+		while(data != -1) {
+		    //do something with data
+
+		    //read next byte
+		    data = input.read();
+		}
+
+通过OutputStream或Writer写入到数组
+	同样的去写数据，可以用ByteArrayOutputStream或CharArrayWriter。你需要做的事情就是创建一个ByteArrayOutputStream或CharArrayWriter，然后向这里面写数据，就像你用其他的stream或writer一样。
+
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+		output.write("This text is converted to bytes".getBytes("UTF-8"));
+
+		byte[] bytes = output.toByteArray();
+
+System.in
+	System.in是一个InputStream，它是控制台程序的典型的接受键盘输入的流。由于数据经常通过配置文件或命令行参数传递给Java程序，所以不会经常用它。在GUI应用中，程序的输入是GUI提供的。这是一个来自Java IO中独立的input机制。
+
+System.out
+	System.out是一个PrintStream。它经常把你写入的数据输出到控制台。它经常用在命令行工具中。在debug模式打印报告中也会经常用到它（虽然它不是最好的往事去输出debug信息）
+
+System.err
+	System.err是一个PrintStream。它的作用有些像System.out，不同的是它一般用来打印错误日志。一些程序（比如Eclipse）会用红色字体来显示System.err的输出日志。
+
