@@ -1,0 +1,10 @@
+步骤：
+	1.检查数据库sql文件及表
+	         本地导出sql文件，远程运行导出的sql文件创建表结构
+	2.打包项目jar包，并上传
+	         打包步骤，install api，install项目模块，install common，package 具体子系统模块
+	         将yml及properties配置文件置于jar包同一路径中，并修改对应的参数配置（数据库，常规参数）
+	         运行jar包，java -jar xxx.jar(可加上JVM调优参数)
+	3.在远程电脑中调试接口
+	4.配置nginx进行端口转发，配置nginx静态资源文件路径
+	5.完善接口文档
