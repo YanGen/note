@@ -1,0 +1,12 @@
+@echo off      表示在此语句后所有运行的命令都不显示命令行本身 
+call c:\code\run.bat 执行另一个批处理文件
+
+echo %CD%                    #代表当前目录的字符串
+echo %DATE%                  #当前日期
+echo %TIME%                  #当前时间
+
+
+@echo off         for循环的使用
+for %%t in (*.bat *.txt) do type %%t
+注意1，打印的是bat和txt文件的内容
+注意2，此bat放在需打印文件内容的文件一个目录层级下
