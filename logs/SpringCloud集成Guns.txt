@@ -1,0 +1,9 @@
+1、使用idea 进行 导入 -> guns-parent
+2、修改数据源:
+	目标：application.yml
+	修改内容: 
+		2.1 spring.datasource
+		2.2 guns.flowable.datasource
+		2.3 guns.flowable.muti-datasource
+3、修改端口
+4、启动
