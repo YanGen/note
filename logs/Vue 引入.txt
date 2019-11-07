@@ -1,0 +1,50 @@
+
+
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
+<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+
+
+
+<script type="text/javascript">
+	
+	$(document).ready(function (){
+		
+	 	var urlPre = urlPre;
+		// 基于准备好的dom，初始化echarts实例
+	 	window.onload = function(){
+	    var vm = new Vue({
+	        el:'#content',
+	        data:{
+	        	city:"广州市",
+	        	province:"广东省",
+	        	address:"广东省广州市",
+	        	
+	        },
+	        created: function () {
+	        	this.$http.get(urlPre+'/list/1/70/71').then(result => {
+            // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+            var result = result.body
+	            if (result.status === 0) {
+	              alert('成功！')
+	            } else {
+	              // 失败了
+	              alert('获取数据失败！')
+	            }
+	          })
+	        	
+       		},
+	        methods:{
+	            showSearch:function(){
+	            	
+	            },
+	        },
+	        watch: {
+	        	// 监听地图点击
+	            
+	        }
+	    });
+	}
+	})
+ 	
+	</script>
