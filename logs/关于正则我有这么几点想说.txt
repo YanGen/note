@@ -1,3 +1,26 @@
-https://blog.csdn.net/qq_39240512/article/details/92071746
 
-https://blog.csdn.net/m0_37034294/article/details/82917234
+匹配三位连续数字
+select i_number from select_card where i_number REGEXP '([0-9])\\1{2}';
+匹配三位以上连续数字
+select i_number from select_card where i_number REGEXP '([0-9])\\1{2,}';
+
+匹配六位顺增
+select i_number from select_card where i_number REGEXP '(?:0(?=1)|1(?=2)|2(?=3)|3(?=4)|4(?=5)|5(?=6)|6(?=7)|7(?=8)|8(?=9)){5}[0-9
+]';
+匹配六位顺降
+select i_number from select_card where i_number REGEXP '(?:9(?=8)|8(?=7)|7(?=6)|6(?=5)|5(?=4)|4(?=3)|3(?=2)|2(?=1)|1(?=0)){5}[0-9]';
+匹配六位顺增或顺降
+select i_number from select_card where i_number REGEXP '(?:(?:0(?=1)|1(?=2)|2(?=3)|3(?=4)|4(?=5)|5(?=6)|6(?=7)|7(?=8)|8(?=9)){5}|(?:9(?=8)|8(?=7)|7(?=6)|6(?=5)|5(?=4)|4(?=3)|3(?=2)|2(?=1)|1(?=0)){5})[0-9]';
+
+
+匹配 AABB
+select i_number from select_card where i_number REGEXP '([0-9])\\1{2,}([0-9])\\2{2,}';
+匹配 AAA+BBB+类型
+select i_number from select_card where i_number REGEXP '([0-9])\\1{2,}([0-9])\\2{2,}';
+以上AABB 允许 AAAA 的情况 如不允许可将第二个(\d)改为((?!\1)\d)
+如：
+	select i_number from select_card where i_number REGEXP '([0-9])\1((?!\1)[0-9])\2';
+
+
+
+末位匹配只需加 $
