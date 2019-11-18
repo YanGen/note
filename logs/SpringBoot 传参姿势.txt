@@ -1,0 +1,53 @@
+formData1:
+	public Result login(String username, String password)
+
+	var param = {	
+	    "username": "admin",	
+	    "password": "admin"	
+	}	
+	$.ajax({	
+	    url: "/sys/login",	
+	    data: param,	
+	    type: "post",	
+	    dataType: "json",	
+	    success: function(data) {	
+	    }	
+	});
+
+
+json1:
+	
+	public String  byParams (@RequestBody List<String> params)
+
+	params = [];
+	params = JSON.stringify(params);
+	$.ajax({
+	    "type" : "post",
+	    "async" : false,
+	    "url" : url,
+	    "contentType": "application/json",
+	      "dataType" : "json",
+	       "data" : params,
+	       "success" : function(res) {}
+	});	
+
+
+json2
+	@PostMapping("/register")	
+	public Result register(SysUser user)
+	var param = {	
+	    "username": "admin",	
+	    "password": "admin"	
+	}	
+	param = JSON.stringify(param);	
+	$.ajax({	
+	    url: "/sys/multiParameter",	
+	    data: param,	
+	    type: "post",	
+	    contentType: "application/json",	
+	    dataType: "json",	
+	    success: function(data) {	
+	    }	
+	});
+
+如果再碰到 会继续记录
