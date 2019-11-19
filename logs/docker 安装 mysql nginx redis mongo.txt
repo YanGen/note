@@ -1,0 +1,14 @@
+Mysql:
+	安装MySQL(最新版本)
+		查看本地镜像：$ sudo docker images 
+	  	本地没有镜像，则 $ sudo docker search mysql   
+  		选择STARS最多的 $ sudo docker pull mysql
+  	安装MySQL(指定版本)
+  		sudo docker pull mysql:5.4
+  	启动MySQL
+  		$ sudo docker run -p 12345:3306 --name mysql -v /scy/mysql/conf:/etc/mysql/conf.d -v /scy/mysql/logs:/logs -v /scy/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.4
+  		参数讲解： -p是将docker中mysql端口号3306映射成为12345端口,也可以选择不映射，使用默认的3306
+          --name mysql: 运行服务的取名
+          -v是将主机目录下的文件挂载到容器中路径下(/scy是我本人用户)
+          -e MYSQL_ROOT_PASSWORD:初始化root用户密码
+          -d mysql:5.4 : 后台运行mysql5.4
