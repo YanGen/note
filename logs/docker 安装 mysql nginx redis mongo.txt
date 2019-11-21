@@ -12,3 +12,9 @@ Mysql:
           -v是将主机目录下的文件挂载到容器中路径下(/scy是我本人用户)
           -e MYSQL_ROOT_PASSWORD:初始化root用户密码
           -d mysql:5.4 : 后台运行mysql5.4
+redis:
+	docker pull redis
+	docker run --name redis -p 12580:6379 -v /docker/redis/data:/data  -d redis:latest redis-server --appendonly yes --requirepass "ud@redis"
+
+nginx:
+	
