@@ -34,7 +34,7 @@ json1:
 
 json2
 	@PostMapping("/register")	
-	public Result register(SysUser user)
+	public Result register(@RequestBody SysUser user)
 	var param = {	
 	    "username": "admin",	
 	    "password": "admin"	

@@ -30,6 +30,10 @@
 		CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
 		5525373371f3        centos              "/bin/bash"         7 minutes ago       Exited (0) 7 minutes ago                        nifty_rosalind
 
+docker 容器必须在停止运行时移除
+	docker stop id // 停止
+	docker rm id // 移除
+
 docker 让镜像运行停留在后台
 	1、启动一个容器并后台运行
 
@@ -61,3 +65,7 @@ docker 映射文件从宿主机到容器,端口号映射
 
 	$ docker run -i -t -p 81:80 -v /develop/data:/data  centos /bin/bash
 	-p:映射端口号 -v:磁盘目录映射
+
+docker 文件拷贝
+	宿主机拷贝至容器 docker cp /docker/nginx/conf/nginx.conf 6c933a76bdf:/etc/nginx/nginx.conf
+	容器拷贝至宿主机 docker cp 6c933a76bdf:/etc/nginx/nginx.conf /docker/nginx/conf/nginx.conf
