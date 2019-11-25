@@ -7,3 +7,68 @@
 	需要手动编写SQL语句和映射规则，某些情况下会加大工作量
 
 
+四大核心组件
+
+
+	SqlSessionFactoryBuilder(构造器)： 根据配置或代码生成SqlSessionFactory,采用分步构建的Builder模式，创建成功SqlSessionFactory后就失去了作用。
+	SqlSessionFactory(工厂接口)：使用它来生成SqlSession接口对象，使用工厂模式。你可以认为它是一个数据库连接池，为了避免它被多次创建，消耗数据库资源，一般我们采用单例模式创建，存活于整个mybatis中。
+	SqlSession(会话)：即可发送SQL执行返回结果，又可获取mapper的接口。相当于一个数据库连接对象，可以在一个事务里面执行多条SQL，通过commit、rollback进行提交或回滚事务。存活于一个业务逻辑中，处完成后为避免消耗数据库资源，可以使用try…catch…finally确保将其关闭，
+	SQL Mapper(映射器)：由一个Java接口和XML文件（或注解）构成。根据编写的SQL和映射规则，实现对数据库的访问，并返回结果。存活于一个请求中，一但请求完毕后，就会废弃。
+
+1、SqlSessionFactory的创建
+	SqlSessionFactory可以通过两种方式进行创建，一种是java代码生成，一种是读取XML配置文件生成。一般大家都使用XML模式进行创建，因为修改时比较方便，方便日后的管理，其次看起来也比较直观。
+
+	XML文件创建(除此之后可由Java代码直接创建)：
+	这是一个简单mybatis的配置文件，只配置了数据库。一般都是以mybatis-config.xml命名
+	<?xml version="1.0" encoding="UTF-8" ?>
+	<!DOCTYPE configuration
+	        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+	<configuration>
+	    <!--数据库环境 -->
+	    <properties resource="jdbc.properties"/>
+	   <environments default="development">
+	       <environment id="decelopment">
+	           <transactionManager type="JDBC" />
+	           <dataSource type="POOLED">
+	               <property name="driver" value="com.mysql.jdbc.Driver"/>
+	               <property name="url" value="jdbc:mysql://localhost:3306/mybatis_studydb"/>
+	               <property name="username" value="root"/>
+	               <property name="password" value=""/>
+	           </dataSource>
+	       </environment>
+	   </environments>
+	</configuration>
+
+	有了数据库环境，我们就可以简单生成SqlSessionFactory了
+
+	String resource = "mybatis-config.xml";
+	InputStream inputStream = Resources.getResourceAsStream(resource);//读取配置文件
+	MySqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+
+2、掌握SqlSession的使用
+	mybatis中SqlSession是它的核心接口，有两个实现类：DefaultSqlSession和SqlSessionManager,其中DefaultSqlSession是在单线程中使用的，SqlSessionManager是在多线程中使用的。
+
+	SqlSession共有一下三个作用:
+
+		获取Mapper接口
+		发送SQL给数据库
+		控制数据库事务
+
+	 //这里的sqlSessionFactory是上面SqlSessionFactory创建出来的·
+	SqlSession session =  sqlSessionFactory.openSession();
+	try {
+	 // do work
+	 sqlSessionFactory.commit();
+	} catch (Exception e){
+	 sqlSessionFactory.rollback();  
+	} finally {
+	 session.close();
+	}
+	
+3、了解映射器
+	映射器是MyBtis中最为重要、最复杂的组件。可以通过XML文件和注解的形式去实现。可以用来配置以下内容：
+		描述映射规则
+		编写SQL语句，可以配置参数类型、返回类型、缓存刷新等信息。
+		支持动态SQL
+		配置缓存
