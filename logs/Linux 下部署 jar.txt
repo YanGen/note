@@ -1,0 +1,6 @@
+
+ss -lntpd | grep :18004
+kill -9 pid
+
+
+nohup java -jar things-register-build-18004.jar >/home/yg/project/thingsRegisterBuild/log.out 2>&1 &
