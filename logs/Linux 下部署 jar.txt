@@ -1,6 +1,5 @@
 
-ss -lntpd | grep :18004
-kill -9 pid
-
+ss -lntpd | grep :18004 //查看占用
+kill -9 pid //杀进程
 
 nohup java -jar things-register-build-18004.jar >/home/yg/project/thingsRegisterBuild/log.out 2>&1 &
