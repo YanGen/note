@@ -1,0 +1,7 @@
+// 获取前后指定天数日期 ,sep 整形
+function backDay(date,sep){
+    return new Date(date.getTime() - sep*24*60*60*1000);
+}
+
+// 获取 year/date/hour 格式日期
+date.toLocaleDateString()
