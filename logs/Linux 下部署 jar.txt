@@ -1,6 +1,3 @@
-
-
-
 ss -lntpd | grep :18004 //查看占用
 kill -9 pid //杀进程
 
