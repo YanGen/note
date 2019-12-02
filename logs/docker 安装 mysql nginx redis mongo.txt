@@ -4,9 +4,9 @@ Mysql:
 	  	本地没有镜像，则 $ sudo docker search mysql   
   		选择STARS最多的 $ sudo docker pull mysql
   	安装MySQL(指定版本)
-  		sudo docker pull mysql:5.4
+  		sudo docker pull mysql:5.7
   	启动MySQL
-  		$ sudo docker run -p 12345:3306 --name mysql -v /scy/mysql/conf:/etc/mysql/conf.d -v /scy/mysql/logs:/logs -v /scy/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.4
+  		$ sudo docker run -p 12345:3306 --name mysql -v /docker/mysql/conf:/etc/mysql/conf.d -v /docker/mysql/logs:/logs -v /docker/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
   		参数讲解： -p是将docker中mysql端口号3306映射成为12345端口,也可以选择不映射，使用默认的3306
           --name mysql: 运行服务的取名
           -v是将主机目录下的文件挂载到容器中路径下(/scy是我本人用户)
@@ -19,9 +19,14 @@ redis:
 nginx:
 	docker pull nginx
 	新建挂载目录 conf conf.d html logs
+	先启动
+	docker run -p 80:80 --name nginx -d nginx
 	从拉取nginx的镜像容器中的中copy 配置出来到挂载目录
 	docker cp 6c933a76bdf:/etc/nginx/nginx.conf /docker/nginx/conf/nginx.conf
 	docker cp d6c933a76bdf:/etc/nginx/conf.d/default.conf /docker/nginx/conf.d
+	再关闭移除
+	docker stop id
+	docker rm id
 	挂载并启动
 	docker run -p 80:80 --name nginx --privileged=true -v /docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf -v /docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v /docker/nginx/logs:/var/log/nginx -v /docker/nginx/html:/usr/share/nginx/html -d nginx
 
