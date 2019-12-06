@@ -1,0 +1,81 @@
+1.下载解压(例2.7.7)
+2.修改Hadoop配置，让Hadoop能应用Java环境
+	追加 hadoop-2.7.3/etc/hadoop/hadoop-env.sh
+		export JAVA_HOME= /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.232.b09-0.el7_7.x86_64
+	注:取得路径的命令
+		echo $JAVA_HOME
+3.将Hadoop加入服务器的环境中
+	/etc/profile
+	追加
+		export HADOOP_HOME=/home/bigdata/hadoop-2.7.7
+		export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.232.b09-0.el7_7.x86_64
+		export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+	环境生效
+		source /etc/profile
+4.修改/home/bigdata/hadoop-2.7.7/etc/hadoop/core-site.xml 文件
+	<configuration>
+		<!-- 指定HDFS老大（namenode）的通信地址 指本机ip即可 localhost也行 -->  
+
+	    <property>  
+	        <name>fs.defaultFS</name>  
+	        <value>hdfs://106.54.253.27:8020</value>  
+	    </property>
+		
+		<property>
+			<name>hadoop.tmp.dir</name>
+			<value>/home/bigdata/hadoop-2.7.7/tmp/</value>
+		</property>
+		
+		<property>
+			  <name>ipc.client.connect.max.retries</name>
+			  <value>100</value>
+		</property>
+		<property>
+			  <name>ipc.client.connect.retry.interval</name>
+			  <value>10000</value>
+		</property>
+
+
+	</configuration>
+5.修改/home/bigdata/hadoop-2.7.7/etc/hadoop/hdfs-site.xml 
+	<configuration>
+
+		<property>  
+	        <name>dfs.name.dir</name>  
+	        <value>/usr/hadoop/hdfs/nameNode</value>  
+	        <description>namenode上存储hdfs名字空间元数据 </description>   
+	    </property>  
+	    <property>  
+	        <name>dfs.data.dir</name>  
+	        <value>/usr/hadoop/hdfs/dataNode</value>  
+	        <description>datanode上数据块的物理存储位置</description>  
+	    </property>
+		<property>    
+			 <name>dfs.permissions</name>
+			 <value>false</value>
+		 </property>    
+		<property>
+	        <name>dfs.secondary.http.address</name>
+	        <value>106.54.253.27:50090</value>
+	    </property>
+		<!-- 设置hdfs副本数量 -->  
+	    <property>  
+	        <name>dfs.replication</name>  
+	        <value>1</value>  
+	    </property>
+	</configuration>
+6.配置SSH免密码登录
+	ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa  
+	cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys  
+	chmod 0600 ~/.ssh/authorized_keys 
+7.第一次启动hdfs需要格式化，之后启动就不需要
+	/home/bigdata/hadoop-2.7.7/bin/hdfs namenode -format
+8.启动
+	hadoop目录下
+		./sbin/start-yarn.sh
+		./sbin/start-dfs.sh
+9.启动
+	hadoop目录下
+		./sbin/stop-dfs.sh
+		./sbin/stop-yarn.sh
+
