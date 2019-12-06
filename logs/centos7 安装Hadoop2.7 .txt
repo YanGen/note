@@ -74,7 +74,7 @@
 	hadoop目录下
 		./sbin/start-yarn.sh
 		./sbin/start-dfs.sh
-9.启动
+9.关闭
 	hadoop目录下
 		./sbin/stop-dfs.sh
 		./sbin/stop-yarn.sh
