@@ -1,0 +1,88 @@
+常见优化规则
+	表连接数
+		连接的表越多，性能越差
+		可能的话，将连接拆分成若干个过程逐一执行
+		优先执行可显著减少数据量的连接，既降低了复杂度，也能够容易按照预期执行
+		如果不可避免多表连接，很可能是设计缺陷
+		外链接效果差，因为必须对左右表进行表扫描
+		尽量使用inner join查询
+	使用临时表
+		如果不可避免，可以考虑使用临时表或表变量存放中间结果。
+	少用子查询
+	视图嵌套
+		不要过深,一般视图嵌套不要超过2个为宜。
+SQL编写注意事项
+	NULL列
+		Null列使用索引没有意义，任何包含null值的列都不会被包含在索引中。因此where语句中的is null或is not null的语句优化器是不允许使用索引的。
+	concat或||
+	 	concat或||是mysql和oracle的字符串连接操作，如果对列进行该函数操作，那么也开会忽略索引的使用。
+	like
+		通配符出现在首位，无法使用索引，反之可以。
+
+		-- 无法使用索引
+		select .. from .. where name like '%t%' ;
+		-- 可以使用索引
+		select .. from .. where name like 't%' ;
+	order by
+		order by子句中不要使用非索引列或嵌套表达式，这样都会导致性能降低。
+	Not运算
+		not运算无法使用索引，可以改成其他能够使用索引的操作。如下：
+			-- 索引无效
+			select .. from .. where sal != 3000 ;
+			-- 索引生效
+			select .. from .. where sal < 3000  or sal > 3000;
+	where与having
+		select .. from .. on .. where .. group by .. having .. order by .. limit ..，以上是sql语句的语法结构，其中on、where和having是有过滤行为的，过滤行为越能提前完成就越可以减少传递给下一个阶段的数据量，因此如果在having中的过滤行为能够在where中完成，则应该优先考虑where来实现。
+	exists和in
+		1、exists是对外表做loop循环，每次loop循环再对内表（子查询）进行查询，那么因为对内表的查询使用的索引（内表效率高，故可用大表），而外表有多大都需要遍历，不可避免（尽量用小表），故内表大的使用exists，可加快效率；
+
+	　　2、in是把外表和内表做hash连接，先查询内表，再把内表结果与外表匹配，对外表使用索引（外表效率高，可用大表），而内表多大都需要查询，不可避免，故外表大的使用in，可加快效率。
+
+	　　3、如果用not in ，则是内外表都全表扫描，无索引，效率低，可考虑使用not exists，也可使用A left join B on A.id=B.id where B.id is null 进行优化。
+
+		not in是最低效的，因为要对子查询的表进行全表扫描。可以考虑使用外链接或not exists。如下：
+		-- 正确
+		SELECT  *
+		FROM EMP 
+		WHERE  
+		    EMPNO > 0 
+		    AND  EXISTS (SELECT X FROM DEPT WHERE DEPT.DEPTNO = EMP.DEPTNO AND LOC = 'MELB')
+
+		-- 错误
+		SELECT  * 
+		FROM  EMP 
+		WHERE  EMPNO > 0  AND  DEPTNO IN(SELECT DEPTNO  FROM  DEPT  WHERE  LOC = 'MELB')
+	索引
+		索引的好处可以实现折半查找，时间复杂度是
+		O(log2n)
+		，但是也有成本，需要额外的空间存放索引数据，并且每次insert、update和delete都会对索引进行更新，因此会多增加4、5次的磁盘IO。所以给一些不必要使用索引的字段增加索引，会降低系统的性能。对于oracle来讲，SQL语句尽量大写，内部需要向将小写转成大写，再执行。
+
+		不要在索引列上使用函数，这样会停止使用索引，进行全表扫描，如下：
+
+		-- 错误
+		SELECT … FROM  DEPT  WHERE SAL * 12 > 25000; 
+		-- 正确
+		SELECT … FROM  DEPT  WHERE SAL > 25000/12; 
+	>与>=
+		-- 直接定位到4的记录(推荐)
+		select .. from .. where SAL >= 4 ;
+		-- 先定位到3，再向后找1个(不推荐)
+		select .. from .. where SAL > 3 ;
+	union代替or
+		在索引列上，可以使用union替换or操作。索引列上的or操作会造成全表扫描。
+
+		-- 高效: 
+		SELECT LOC_ID , LOC_DESC , REGION FROM LOCATION WHERE LOC_ID = 10 
+		UNION 
+		SELECT LOC_ID , LOC_DESC , REGION FROM LOCATION WHERE REGION = 'MELBOURNE' 
+
+		-- 低效: 
+		SELECT LOC_ID ,LOC_DESC ,REGION FROM LOCATION WHERE LOC_ID=10 OR REGION ='MELBOURNE'
+	is null & is not null
+		如果列可空，避免使用索引。对于多个列使用的索引，起码保证至少有个列不为空。对于多列索引，只有访问了第一个列才会启用索引，如果访问后面的列则使用的是全表扫描。
+			-- 低效: (索引失效) 
+			SELECT .. FROM  DEPARTMENT  WHERE  DEPT_CODE IS NOT NULL; 
+			-- 高效: (索引有效) 
+			SELECT .. FROM  DEPARTMENT  WHERE  DEPT_CODE >=0; 
+	union & union all
+		union具有去重的操作，增加了计算时间。union all不需要去重，但会包含相同记录。同样功能下，首选union all操作。
