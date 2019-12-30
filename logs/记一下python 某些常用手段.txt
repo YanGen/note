@@ -1,4 +1,86 @@
-去除文件标题不允许符号
-	re.sub(r"[\/\\\:\*\?\"\<\>\|]",'_',title)
+#去除文件标题不允许符号
+re.sub(r"[\/\\\:\*\?\"\<\>\|]",'_',title)
 
+# 秒级时间戳
 int(time.time()/1000)
+
+# 格式化时间转时间戳
+strTime = "2019-10-10 12:00:00"
+format='%Y-%m-%d %H:%M:%S'
+timeTuple = time.strptime(strTime, format)  # 把格式化好的时间转换成元祖
+result = time.mktime(timeTuple)  # 把时间元祖转换成时间戳
+return int(result)
+
+# 时间戳格式化
+timestamp = 1577670720
+format='%Y-%m-%d %H:%M:%S'
+timeTuple = time.localtime(timestamp)  # 把时间戳转换成时间元祖
+result = time.strftime(format, timeTuple)  # 把时间元祖转换成格式化好的时间
+return result
+
+# 几个方法增强
+# 打印日志
+def log(text="execute => "):
+def decorator(func):
+    def wrapper(*args, **kw):
+        print('%s %s():' % (text, func.__name__))
+        return func(*args, **kw)
+    return wrapper
+return decorator
+
+# 睡眠
+@log()
+def sleep(second=1):
+    def decorator(func):
+        def wrapper(*args, **kw):
+            time.sleep(second)
+            return func(*args, **kw)
+        return wrapper
+    return decorator
+
+# 错误重尝
+@log()
+def retry(count=1):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            ex = None
+            for i in range(count):
+                try:
+                    ans = func(*args, **kwargs)
+                    return ans
+                except Exception as e:
+                    ex = e
+            raise ex
+        return wrapper
+    return decorator
+
+@retry(10)
+@log()
+@sleep()
+def loadPage(url):
+    global req
+    global reqNum
+    reqNum += 1
+    req.headers['x-requested-with'] = None
+    req.headers['content-type'] = None
+    req.headers["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+
+    # print("程序第", reqNum, "次请求~")
+    # 请求模块执行POST请求,response为返回对象
+    response = req.get(url, timeout=10)
+    req.headers['x-requested-with'] = "XMLHttpRequest"
+    req.headers['content-type'] = "application/x-www-form-urlencoded;charset=UTF-8"
+    req.headers["Accept"] = None
+
+    # 从请求对象中拿到相应内容解码成utf-8 格式
+    html = response.content.decode("utf-8","ignore")
+    return html
+
+@retry(3)
+@log()
+@sleep()
+def postApi(url, data):
+    global req
+    response = req.post(url, data=data, timeout=20)
+    html = response.content.decode("utf-8")
+    return html
