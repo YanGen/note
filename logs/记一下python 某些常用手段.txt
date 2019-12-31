@@ -4,6 +4,9 @@ re.sub(r"[\/\\\:\*\?\"\<\>\|]",'_',title)
 # 秒级时间戳
 int(time.time()/1000)
 
+all([True,True,1]) #list中所有都为True时为True 否则为False
+any([False,False,1]) #list中任一为True时为True 否则为False
+
 # 格式化时间转时间戳
 strTime = "2019-10-10 12:00:00"
 format='%Y-%m-%d %H:%M:%S'
