@@ -1,0 +1,58 @@
+例: -XX:MetaspaceSize=60m -XX:MaxMetaspaceSize=80m -Xmx250m -Xms250m -Xmn150m -Xss256k -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC
+
+堆设置
+	-Xms:初始堆大小
+	-Xmx:最大堆大小
+		xms和xmx同值，限制堆内存为固定大小
+	-Xmn:新生代大小
+		堆大小 = 新生代 + 老年代
+	-Xss128k：设置每个线程的堆栈大小。JDK5.0以后每个线程堆栈大小为1M，以前每个线程堆栈大小为256K。更具应用的线程所需内存大小进行调整。在相同物理内存下，减小这个值能生成更多的线程。但是操作系统对一个进程内的线程数还是有限制的，不能无限生成。
+	-XX:NewRatio:设置新生代和老年代的比值。如：为3，表示年轻代与老年代比值为1：3
+	-XX:SurvivorRatio:新生代中Eden区与两个Survivor区的比值。注意Survivor区有两个。如：为3，表示Eden：Survivor=3：2，一个Survivor区占整个新生代的1/5  
+	-XX:MaxTenuringThreshold:设置转入老年代的存活次数。如果是0，则直接跳过新生代进入老年代
+	-XX:PermSize、-XX:MaxPermSize:分别设置永久代最小大小与最大大小（Java8以前）
+	-XX:MetaspaceSize、-XX:MaxMetaspaceSize:分别设置元空间最小大小与最大大小（Java8以后）
+收集器设置
+	-XX:+UseSerialGC:设置串行收集器
+	-XX:+UseParallelGC:设置并行收集器
+	-XX:+UseParalledlOldGC:设置并行老年代收集器
+	-XX:+UseConcMarkSweepGC:设置并发收集器
+垃圾回收统计信息
+	-XX:+PrintGC
+	-XX:+PrintGCDetails
+	-XX:+PrintGCTimeStamps
+	-Xloggc:filename
+并行收集器设置
+	-XX:ParallelGCThreads=n:设置并行收集器收集时使用的CPU数。并行收集线程数。
+	-XX:MaxGCPauseMillis=n:设置并行收集最大暂停时间
+	-XX:GCTimeRatio=n:设置垃圾回收时间占程序运行时间的百分比。公式为1/(1+n)
+并发收集器设置
+	-XX:+CMSIncrementalMode:设置为增量模式。适用于单CPU情况。
+	-XX:ParallelGCThreads=n:设置并发收集器新生代收集方式为并行收集时，使用的CPU数。并行收集线程数。
+
+Minor GC
+	从年轻代空间（包括 Eden 和 Survivor 区域）回收内存被称为 Minor GC，这里的年轻代满指的是Eden代满，Survivor满不会引发GC。这一定义既清晰又易于理解。但是，当发生Minor GC事件的时候，有一些有趣的地方需要注意到：
+		1、当 JVM 无法为一个新的对象分配空间时会触发 Minor GC，比如当 Eden 区满了。所以分配率越高，越频繁执行 Minor GC。
+		2、执行 Minor GC 操作时，不会影响到永久代。从永久代到年轻代的引用被当成 GC roots，从年轻代到永久代的引用在标记阶段被直接忽略掉。
+		3、质疑常规的认知，所有的 Minor GC 都会触发“全世界的暂停（stop-the-world）”，停止应用程序的线程。对于大部分应用程序，停顿导致的延迟都是可以忽略不计的。其中的真相就 是，大部分 Eden 区中的对象都能被认为是垃圾，永远也不会被复制到 Survivor 区或者老年代空间。如果正好相反，Eden 区大部分新生对象不符合 GC 条件，Minor GC 执行时暂停的时间将会长很多。
+		每次 Minor GC 会清理年轻代的内存。
+Major GC vs Full GC
+	大家应该注意到，目前，这些术语无论是在 JVM 规范还是在垃圾收集研究论文中都没有正式的定义。但是我们一看就知道这些在我们已经知道的基础之上做出的定义是正确的：
+		● Major GC 是清理永久代。
+		● Full GC 是清理整个堆空间—包括年轻代和永久代
+	Full GC触发机制：
+		（1）调用System.gc时，系统建议执行Full GC，但是不必然执行
+		（2）老年代空间不足
+		（3）方法区空间不足
+		（4）通过Minor GC后进入老年代的平均大小大于老年代的可用内存
+		（5）由Eden区、survivor space1（From Space）区向survivor space2（To Space）区复制时，对象大小大于To Space可用内存，则把该对象转存到老年代，且老年代的可用内存小于该对象大小
+
+对象在JVM 中存活历程
+	1、程序初始化，新生代的三个空间均为空
+	2、Eden被分配的新对象占满，触发第一次Minor GC，Eden中存活对象被复制到Survivor1中，剩余对象被回收（回收后，Eden为空，Survivor1无碎片地存放所有存活对象，Survivor2为空）
+	3、Eden再次被新对象占满，触发第二次Minor GC，此时Eden和Survivor1中的存活对象被复制到Survivor2中，剩余对象被回收（回收后，Eden为空，Survivor1为空，Survivor2无碎片地存放所有存活对象）
+	4、如此交替，经历16次Minor GC还能在新生代中存活的对象，会通过Full GC将survivor中的存活对象移入老年代。
+	5、老年代中对象在每次Full GC后加一岁，在20次GC后销毁。
+
+Survivor区存在意义
+	频发的Full GC消耗的时间是非常可观的，这一点会影响大型程序的执行和响应速度，更不要说某些连接会因为超时发生连接错误了。Survivor通过Minor GC回收碎片（预筛选），拖延和分解了Full GC的频率，致使老年代不会马上被填满

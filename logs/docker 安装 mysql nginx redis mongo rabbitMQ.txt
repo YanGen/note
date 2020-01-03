@@ -35,3 +35,8 @@ mongo
 	docker pull mongo
 	// 运行
 	docker run --name mongo -dit --restart=always -p 10086:27017 -v /docker/mongo/data:/data/db -v /docker/mongo/conf:/etc/mongo -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=ud@mongo mongo
+
+rabbitMQ
+	docker run -d --name rabbitmq -v /docker/rabbitmq/etc/rabbitmq:/etc/rabbitmq -v /docker/rabbitmq/lib/rabbitmq:/var/lib/rabbitmq -v /docker/rabbitmq/log/rabbitmq/:/var/log/rabbitmq -e RABBITMQ_DEFAULT_USER=root -e RABBITMQ_DEFAULT_PASS=ud@rabbitmq  -p 1884:1883 -p 5673:5672 -p 15673:15672 -p 25673:25672 -p 61614:61613 rabbitmq:managem	
+
+	guest ud@rabbitmq

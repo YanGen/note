@@ -38,4 +38,5 @@ Application ClassLoader 加载当前工程类库 （Java）
     }
 
 
-https://blog.csdn.net/codeyanbao/article/details/82875064
+双击委派机制防止类重复加载-->保障了安全 
+比如Java 已经存在java.Lang.String 无法再写一个同样的包
