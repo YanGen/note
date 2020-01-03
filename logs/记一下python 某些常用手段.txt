@@ -59,7 +59,7 @@ def retry(count=1):
 
 @retry(10)
 @log()
-def loadPage(url,rb = False):
+def loadSource(url,rb = False,path = None):
     global req
     global reqNum
     reqNum += 1
@@ -74,8 +74,10 @@ def loadPage(url,rb = False):
     req.headers['content-type'] = "application/x-www-form-urlencoded;charset=UTF-8"
     req.headers["Accept"] = None
     
-    if rb:
-        return response.content
+    if rb and path:
+    	with open(path,mode="wb") as f:
+    		f.write(response.content)
+        return True
 
     # 从请求对象中拿到相应内容解码成utf-8 格式
     html = response.content.decode("gb2312","ignore")
