@@ -46,3 +46,29 @@ Overload和Override的区别，Overloaded的方法是否可以改变返回值的
 	重写Overrid是父类与子类之间多态性的一种表现，重载Overload是一个类中多态性的一种表现。方法的重写Overrid和重载Overload是Java多态性的不同表现。
 StringBuffer和StringBuilder有什么区别，底层实现上呢？
 	StringBuffer线程安全，StringBuilder线程不安全，底层实现上的话，StringBuffer其实就是比StringBuilder多了Synchronized修饰符。
+
+泛型
+	泛型就是指广泛的、普通的类型。在java中是指把类型明确的工作推迟到创建对象或调用方法的时候才去明确的特殊的类型。
+
+	例子：
+		List<String> strings = new ArrayList<String>();
+		strings.add("a String");
+		String aString = strings.get(0);
+
+	泛型可以应用到 类（泛型类）或方法（泛型方法），当我们只需要关注方法本身或者类本身时，可以使用泛型这时候可以提供代码的复用，当用户使用类时才把类型确定下来。
+
+	public class ObjectTool<T> {
+	    private T obj;
+
+	    public T getObj() {
+	        return obj;
+	    }
+
+	    public void setObj(T obj) {
+	        this.obj = obj;
+	    }
+
+	    public <T> void show(T t) {
+	        System.out.println(t);
+	    }
+	}

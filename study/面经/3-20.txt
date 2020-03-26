@@ -3,3 +3,10 @@ CAS compare and set 相比较在设置 硬件级别保证线程安全
 AQS Abstract Queue synchronized
 
 ConcurrentHashMap 分段加锁保证获取锁速度
+
+I/O模型
+	简单理解：用什么样的通道进行数据传输，很大程度的觉得程序的性能。
+	Java支持3种网络编程模型 BIO NIO AIO
+	BIO Blocking io 同步并阻塞的传统阻塞型 也即Java传统IO模型 一个服务器的链接启动一条线程，试用于连接数目较小且固定的架构，程序简单易理解。
+	NIO non blocking io 同步非阻塞 是一种事件驱动的模型 服务器启动一条线程可处理多个读写请求，适用链接数目多且链接比较短的架构，如聊天服务器，弹幕系统，编程较复杂。
+	AIO 异步非阻塞
