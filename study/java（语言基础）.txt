@@ -72,3 +72,14 @@ StringBuffer和StringBuilder有什么区别，底层实现上呢？
 	        System.out.println(t);
 	    }
 	}
+
+枚举
+	只举个例子
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
+	@Getter
+	@ToString
+	public enum CompanyAuth {
+	    publicToAll(1),     //公开给外部
+	    publicToInner(2);  //只对企业内部成员公开
+	    private final Integer auth;
+	}

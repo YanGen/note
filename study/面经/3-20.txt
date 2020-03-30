@@ -1,5 +1,5 @@
 HashMap 底层数据结果
-CAS compare and set 相比较在设置 硬件级别保证线程安全
+CAS compare and swap 相比较在设置 硬件级别保证线程安全
 AQS Abstract Queue synchronized
 
 ConcurrentHashMap 分段加锁保证获取锁速度

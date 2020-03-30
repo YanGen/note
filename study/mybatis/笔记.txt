@@ -54,146 +54,129 @@ Copy
 		<select id=”selectlike”>
 		select * from foo where bar like "%"#{value}"%"
 		</select>
-通常一个 Xml 映射文件，都会写一个 Dao 接口与之对应，请问，这个 Dao 接口的工作原理是什么？Dao 接口里的方法，参数不同时，方法能重载吗？#
-Dao 接口即 Mapper 接口。接口的全限名，就是映射文件中的 namespace 的值；
-接口的方法名，就是映射文件中 Mapper 的 Statement 的 id 值；接口方法内的
-参数，就是传递给 sql 的参数。
-Mapper 接口是没有实现类的，当调用接口方法时，接口全限名+方法名拼接字符
-串作为 key 值，可唯一定位一个 MapperStatement。在 Mybatis 中，每一个
-<select>、<insert>、<update>、<delete> 标签，都会被解析为一个
-MapperStatement 对象。
-举例： com.mybatis3.mappers.StudentDao.findStudentById ，可以唯
-一找到 namespace 为 com.mybatis3.mappers.StudentDao 下面 id 为
-findStudentById 的 MapperStatement。
-Mapper 接口里的方法，是不能重载的，因为是使用 全限名+方法名 的保存和寻
-找策略。Mapper 接口的工作原理是 JDK 动态代理，Mybatis 运行时会使用 JDK
-动态代理为 Mapper 接口生成代理对象 proxy，代理对象会拦截接口方法，转而
-执行 MapperStatement 所代表的 sql，然后将 sql 执行结果返回。
-Mybatis 是如何进行分页的？分页插件的原理是什么？#
-Mybatis 使用 RowBounds 对象进行分页，它是针对 ResultSet 结果集执行的内
-存分页，而非物理分页。可以在 sql 内直接书写带有物理分页的参数来完成物理分
-页功能，也可以使用分页插件来完成物理分页。
+	通常一个 Xml 映射文件，都会写一个 Dao 接口与之对应，请问，这个 Dao 接口的工作原理是什么？Dao 接口里的方法，参数不同时，方法能重载吗？#
+	Dao 接口即 Mapper 接口。接口的全限名，就是映射文件中的 namespace 的值；
+	接口的方法名，就是映射文件中 Mapper 的 Statement 的 id 值；接口方法内的
+	参数，就是传递给 sql 的参数。
+	Mapper 接口是没有实现类的，当调用接口方法时，接口全限名+方法名拼接字符
+	串作为 key 值，可唯一定位一个 MapperStatement。在 Mybatis 中，每一个
+	<select>、<insert>、<update>、<delete> 标签，都会被解析为一个
+	MapperStatement 对象。
+	举例： com.mybatis3.mappers.StudentDao.findStudentById ，可以唯
+	一找到 namespace 为 com.mybatis3.mappers.StudentDao 下面 id 为
+	findStudentById 的 MapperStatement。
+	Mapper 接口里的方法，是不能重载的，因为是使用 全限名+方法名 的保存和寻
+	找策略。Mapper 接口的工作原理是 JDK 动态代理，Mybatis 运行时会使用 JDK
+	动态代理为 Mapper 接口生成代理对象 proxy，代理对象会拦截接口方法，转而
+	执行 MapperStatement 所代表的 sql，然后将 sql 执行结果返回。
 
-分页插件的基本原理是使用 Mybatis 提供的插件接口，实现自定义插件，在插件
-的拦截方法内拦截待执行的 sql，然后重写 sql，根据 dialect 方言，添加对应的物
-理分页语句和物理分页参数。
+Mybatis 是如何进行分页的？分页插件的原理是什么？#
+	Mybatis 使用 RowBounds 对象进行分页，它是针对 ResultSet 结果集执行的内
+	存分页，而非物理分页。可以在 sql 内直接书写带有物理分页的参数来完成物理分
+	页功能，也可以使用分页插件来完成物理分页。
+
+	分页插件的基本原理是使用 Mybatis 提供的插件接口，实现自定义插件，在插件的拦截方法内拦截待执行的 sql，然后重写 sql，根据 dialect 方言，添加对应的物理分页语句和物理分页参数。
 
 Mybatis是如何将sql执行结果封装为目标对象并返回的？都有哪些映射形式？#
-第一种是使用 标签，逐一定义数据库列名和对象属性名之间的映
-射关系。
-第二种是使用 sql 列的别名功能，将列的别名书写为对象属性名。有了列名与属性名的映射关系后，Mybatis 通过反射创建对象，同时使用反射给
-对象的属性逐一赋值并返回，那些找不到映射关系的属性，是无法完成赋值的。
+	第一种是使用 标签，逐一定义数据库列名和对象属性名之间的映射关系。
+	第二种是使用 sql 列的别名功能，将列的别名书写为对象属性名。有了列名与属性名的映射关系后，Mybatis 通过反射创建对象，同时使用反射给对象的属性逐一赋值并返回，那些找不到映射关系的属性，是无法完成赋值的。
 
 如何执行批量插入?#
-首先,创建一个简单的 insert 语句:
+	首先,创建一个简单的 insert 语句:
 
-Copy
-<insert id=”insertname”>
-insert into names (name) values (#{value})
-</insert>
-然后在 java 代码中像下面这样执行批处理插入:
+	<insert id=”insertname”>
+	insert into names (name) values (#{value})
+	</insert>
+	然后在 java 代码中像下面这样执行批处理插入:
 
-Copy
-list < string > names = new arraylist();
-names.add(“fred”);
-names.add(“barney”);
-names.add(“betty”);
-names.add(“wilma”);
-// 注意这里 executortype.batch
-sqlsession sqlsession = sqlsessionfactory.opensession(executortype.batch);
-try {
-    namemapper mapper = sqlsession.getmapper(namemapper.class);
-    for (string name: names) {
-        mapper.insertname(name);
-    }
-    sqlsession.commit();
-}catch (Exception e) {
-    e.printStackTrace();
-    sqlSession.rollback();
-    throw e;
-}finally {
-    sqlsession.close();
-}
-如何获取自动生成的(主)键值?#
-insert 方法总是返回一个 int 值 ，这个值代表的是插入的行数。
-如果采用自增长策略，自动生成的键值在 insert 方法执行完后可以被设置到传入
-的参数对象中。
+	list < string > names = new arraylist();
+	names.add(“fred”);
+	names.add(“barney”);
+	names.add(“betty”);
+	names.add(“wilma”);
+	// 注意这里 executortype.batch
+	sqlsession sqlsession = sqlsessionfactory.opensession(executortype.batch);
+	try {
+	    namemapper mapper = sqlsession.getmapper(namemapper.class);
+	    for (string name: names) {
+	        mapper.insertname(name);
+	    }
+	    sqlsession.commit();
+	}catch (Exception e) {
+	    e.printStackTrace();
+	    sqlSession.rollback();
+	    throw e;
+	}finally {
+	    sqlsession.close();
+	}
+	如何获取自动生成的(主)键值?#
+	insert 方法总是返回一个 int 值 ，这个值代表的是插入的行数。
+	如果采用自增长策略，自动生成的键值在 insert 方法执行完后可以被设置到传入
+	的参数对象中。
 
-Copy
-<insert id=”insertname” usegeneratedkeys=”true” keyproperty=”
-id”>
-insert into names (name) values (#{name})
-</insert>
+	<insert id=”insertname” usegeneratedkeys=”true” keyproperty=”
+	id”>
+	insert into names (name) values (#{name})
+	</insert>
 
+	name name = new name();
+	name.setname(“fred”);
+	int rows = mapper.insertname(name);
+	// 完成后,id 已经被设置到对象中
+	system.out.println(“rows inserted = ” + rows);
+	system.out.println(“generated key value = ” + name.getid());
 
-name name = new name();
-name.setname(“fred”);
-int rows = mapper.insertname(name);
-// 完成后,id 已经被设置到对象中
-system.out.println(“rows inserted = ” + rows);
-system.out.println(“generated key value = ” + name.getid());
 在 mapper 中如何传递多个参数?#
-DAO 层的函数
+	DAO 层的函数
 
-Copy
-public UserselectUser(String name,String area);
-对应的 xml,#{0}代表接收的是 dao 层中的第一个参数，#{1}代表 dao 层中第二
-参数，更多参数一致往后加即可。
-Copy
-<select id="selectUser"resultMap="BaseResultMap">
-select * fromuser_user_t whereuser_name = #{0}
-anduser_area=#{1}
-</select>
-使用 @param 注解
+	public UserselectUser(String name,String area);
+	对应的 xml,#{0}代表接收的是 dao 层中的第一个参数，#{1}代表 dao 层中第二
+	参数，更多参数一致往后加即可。
+	<select id="selectUser"resultMap="BaseResultMap">
+		select * fromuser_user_t whereuser_name = #{0}
+		anduser_area=#{1}
+	</select>
+	使用 @param 注解
 
-Copy
-public interface usermapper {
-    user selectuser(@param(“username”) string username,
-                    @param(“hashedpassword”) string hashedpassword);
-}
-Copy
-<select id=”selectuser” resulttype=”user”>
-select id, username, hashedpassword
-from some_table
-where username = #{username}
-and hashedpassword = #{hashedpassword}
-</select>
-多个参数封装成 map
+	public interface usermapper {
+	    user selectuser(@param(“username”) string username,
+	                    @param(“hashedpassword”) string hashedpassword);
+	}
+	<select id=”selectuser” resulttype=”user”>
+	select id, username, hashedpassword
+	from some_table
+	where username = #{username}
+	and hashedpassword = #{hashedpassword}
+	</select>
+	多个参数封装成 map
 
-Copy
-try {
-//映射文件的命名空间.SQL 片段的 ID，就可以调用对应的映射文件中的SQL
-//由于我们的参数超过了两个，而方法中只有一个 Object 参数收集，因此
-我们使用 Map 集合来装载我们的参数
-    Map < String, Object > map = new HashMap();
-    map.put("start", start);
-    map.put("end", end);
-    return sqlSession.selectList("StudentID.pagination", map);
-} catch (Exception e) {
-    e.printStackTrace();
-    sqlSession.rollback();
-    throw e;
-} finally {
-    MybatisUtil.closeSqlSession();
-}
+	try {
+	//映射文件的命名空间.SQL 片段的 ID，就可以调用对应的映射文件中的SQL
+	//由于我们的参数超过了两个，而方法中只有一个 Object 参数收集，因此
+	我们使用 Map 集合来装载我们的参数
+	    Map < String, Object > map = new HashMap();
+	    map.put("start", start);
+	    map.put("end", end);
+	    return sqlSession.selectList("StudentID.pagination", map);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    sqlSession.rollback();
+	    throw e;
+	} finally {
+	    MybatisUtil.closeSqlSession();
+	}
 Mybatis 动态 sql 有什么用？执行原理？有哪些动态 sql？#
-Mybatis 动态 sql 可以在 Xml 映射文件内，以标签的形式编写动态 sql，执行原理
-是根据表达式的值 完成逻辑判断并动态拼接 sql 的功能。
-Mybatis 提供了 9 种动态 sql 标签：
-trim | where | set | foreach | if | choose| when | otherwise | bind 。
+	Mybatis 动态 sql 可以在 Xml 映射文件内，以标签的形式编写动态 sql，执行原理
+	是根据表达式的值 完成逻辑判断并动态拼接 sql 的功能。
+	Mybatis 提供了 9 种动态 sql 标签：
+	trim | where | set | foreach | if | choose| when | otherwise | bind 。
 
 Xml 映射文件中，除了常见的 select|insert|updae|delete标签之外，还有哪些标签？#
-<resultMap>、<parameterMap>、<sql>、<include>、<selectKey>，加上动态 sql 的 9 个标签，其中 <sql> 为 sql 片段标签，通过
-<include> 标签引入 sql 片段， <selectKey> 为不支持自增的主键生成策略标
-签。
+	<resultMap>、<parameterMap>、<sql>、<include>、<selectKey>，加上动态 sql 的 9 个标签，其中 <sql> 为 sql 片段标签，通过
+	<include> 标签引入 sql 片段， <selectKey> 为不支持自增的主键生成策略标签。
 
 Mybatis 的 Xml 映射文件中，不同的 Xml 映射文件，id 是否可以重复？#
-不同的 Xml 映射文件，如果配置了 namespace，那么 id 可以重复；如果没有配
-置 namespace，那么 id 不能重复；
-原因就是 namespace+id 是作为Map <String, MapperStatement>的 key
-使用的，如果没有 namespace，就剩下 id，那么，id 重复会导致数据互相覆盖。
-有了 namespace，自然 id 就可以重复，namespace 不同，namespace+id 自然
-也就不同
+	不同的 Xml 映射文件，如果配置了 namespace，那么 id 可以重复；如果没有配置 namespace，那么 id 不能重复；原因就是 namespace+id 是作为Map <String, MapperStatement>的 key使用的，如果没有 namespace，就剩下 id，那么，id 重复会导致数据互相覆盖。有了 namespace，自然 id 就可以重复，namespace 不同，namespace+id 自然也就不同
 
 为什么说 Mybatis 是半自动 ORM 映射工具？它与全自动的区别在哪里?#
 Hibernate 属于全自动 ORM 映射工具，使用 Hibernate 查询关联对象或者关联
