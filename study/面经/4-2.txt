@@ -2,3 +2,47 @@
 	1.HTTP1.1规定了默认保持长连接（HTTP persistent connection ，也有翻译为持久连接），数据传输完成了保持TCP连接不断开（不发RST包、不四次握手），等待在同域名下继续用这个通道传输数据；相反的就是短连接。
 	2.Connection:keep-alive 默认开启 keep-alive: timeout=20 可以设置链接过期时间
 	3.TCP的keep alive是检查当前TCP连接是否活着；HTTP的Keep-alive是要让一个TCP连接活久点。它们是不同层次的概念
+
+二、JDK1.8 hashMap 
+	1.hashMap的结构是数组（默认16）上链表，在jdk1.8中，链表的结构是可以随着链表的长度(>8)增加而改变成树形结构（红黑树）；
+	2.重要属性
+		transient int size;//实际键值对个数
+		int threshold;//阈值，超过到这个值后就要进行扩容
+		transient int modCount;//修改计数器，用于快速失败
+		final float loadFactor;//负载因子
+	3.计算Key的hash值
+		HashMap中，计算key的hash值，也就是在table数组中的下标位置算法用到了许多位运算。
+		步骤如下：
+			计算对象自己的hashCode()值，计算上步得到的值高16位于低16位相与。否则在容器length较小时，无法发挥高位的作用，这样能使 得hash分布更加均匀，减少冲突。
+
+				static final int hash(Object key) {
+			        int h;
+			        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+			    }
+
+			定位操作，对上步计算得到hash值进行取模操作。
+				index = (n - 1) & hash//在这里等价于hash%n
+	4、扩容操作（resize()）
+		需要扩容的情况：
+			if (++size > threshold)
+            	resize();
+        每次扩容为之前的两倍：
+			newThr = oldThr << 1; // 等于 oldThr * 2 ^ 1 double threshold
+		在扩容之后就要把具体键值对搬迁到新的table数组中。
+三、hashMap resize()
+	1.JDK1.7 流程
+		1）.整体流程
+			判断是否达到最大容量 2 ^ 30 若达到则修改阈值为 int 最大值 2^31-1 以后不再扩容。
+			实例一个新的Entry数组 调transfer将数据转移到Entry里面。
+			修改阈值。
+		2）.transfer具体流程
+			遍历（for 遍历数组 在每个数组附带链表（若有）中往里遍历）旧的Entry数组，以取得旧Entry数组每个元素
+			取得该索引位数据后释放引用对应索引位数据，将旧元素按原计算过程更新新数组的引用
+	2.JDK1.8 流程
+		没看懂。。。
+	3.为啥扩容是 2^n
+		没看懂
+
+
+
+
