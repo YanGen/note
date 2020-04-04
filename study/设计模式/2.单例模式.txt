@@ -1,0 +1,52 @@
+单例模式
+	1.饿汉式（静态常量）[可用]
+		public class Singleton {
+		    private final static Singleton INSTANCE = new Singleton();
+		    private Singleton(){}
+		    public static Singleton getInstance(){
+		        return INSTANCE;
+		    }
+		}
+	2.饿汉式（静态代码块）[可用]
+		public class Singleton {
+		    private static Singleton instance;
+		    static {
+		        instance = new Singleton();
+		    }
+		    private Singleton() {}
+		    public static Singleton getInstance() {
+		        return instance;
+		    }
+		}
+	6.双重检查[线程安全、无效率问题]
+		public class Singleton {
+		    private static volatile Singleton singleton;
+		    private Singleton() {}
+		    public static Singleton getInstance() {
+		        if (singleton == null) {
+		            synchronized (Singleton.class) {
+		                if (singleton == null) {
+		                    singleton = new Singleton();
+		                }
+		            }
+		        }
+		        return singleton;
+		    }
+		}
+	7.静态内部类
+		// 静态内部类会等到使用实才实例而且保证实例时线程安全
+		public class Singleton {
+		    private Singleton() {}
+		    private static class SingletonInstance {
+		        private static final Singleton INSTANCE = new Singleton();
+		    }
+		    public static Singleton getInstance() {
+		        return SingletonInstance.INSTANCE;
+		    }
+		}
+	8.枚举
+		public enum Singleton {
+		    INSTANCE;
+		    public void whateverMethod() {
+		    }
+		}
