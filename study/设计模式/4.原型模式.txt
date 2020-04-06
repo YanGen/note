@@ -1,0 +1,61 @@
+用原型实例指定创建对象的种类，并通过拷贝这些原型创建新的对象。
+
+Java中可通过Object的clone方法实现对象拷贝 也可以通过实现Cloneable接口中的clone方法重写拷贝过程。
+
+原型模式在spring中的应用
+	<bean id = "id01" class="com...." scope="prototype"/> 
+	prototype 就是原型模式 即每次获取bean对将是不同的对象
+	singleton 为单例模式与之相反
+
+前提：
+	基本数据类型的特点：直接存储在栈(stack)中的数据
+	引用数据类型的特点：存储的是该对象在栈中引用，真实的数据存放在堆内存里
+
+浅拷贝
+	Object clone 默认为浅拷贝
+	只会对栈中数据进行拷贝，这样的效果即对基本数据类型的数据完整拷贝 而对引用类型数据拷贝引用而非堆数据
+深拷贝
+	两种实现方式：
+		1.重写clone方法
+		2.通过对象序列化实现
+
+深拷贝 --序列化实现
+
+public abstract class CloneEntity<T> implements Serializable,Cloneable{
+    public T cloneEntity(){
+        ByteArrayOutputStream bos  = null;
+        ObjectOutputStream oos = null;
+        ByteArrayInputStream bis = null;
+        ObjectInputStream ois = null;
+        T entity = null;
+        try {
+            //序列化
+            bos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(this);
+            //反序列化
+            bis = new ByteArrayInputStream(bos.toByteArray());
+            ois = new ObjectInputStream(bis);
+            entity = (T)ois.readObject();
+            return entity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }finally {
+            try {
+                if (ois!=null)
+                    ois.close();
+                if (bis!=null)
+                    bis.close();
+                if (oos!=null)
+                    oos.close();
+                if (bos!=null)
+                    bos.close();
+            }catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+}
