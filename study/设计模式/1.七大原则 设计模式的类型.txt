@@ -19,6 +19,8 @@
 		别浪费原则
 	6.合成（组合）/聚合复用原则（Composite/Aggregate Reuse Principle，CARP）
 		一句话，尽量使用合成/聚合的方式而非继承
+		组合（一个人的头）：一经实例就有，同生共死，不可分割的属性
+		聚合（一个人的衣服）：后来才传进来的属性。
 
 	7.最少知识原则（Least Knowledge Principle，LKP）或者迪米特法则（Law of Demeter，LOD）
 		封装好自己的逻辑，虽然类与类的依赖不可避免，但对其他类中各个属性等内容知道的越少越好
