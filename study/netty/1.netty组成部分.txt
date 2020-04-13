@@ -1,0 +1,17 @@
+Channel
+	Channel 是 NIO 基本的结构。它代表了一个用于连接到实体如硬件设备、文件、网络套接字或程序组件,能够执行一个或多个不同的 I/O 操作（例如读或写）的开放连接。
+	现在，把 Channel 想象成一个可以“打开”或“关闭”，“连接”或“断开”和作为传入和传出数据的运输工具。
+
+Callback (回调)
+	callback (回调)是一个简单的方法,提供给另一种方法作为引用,这样后者就可以在某个合适的时间调用前者。这种技术被广泛使用在各种编程的情况下,最常见的方法之一通知给其他人操作已完成。
+	Netty 内部使用回调处理事件时。一旦这样的回调被触发，事件可以由接口 ChannelHandler 的实现来处理。如下面的代码，一旦一个新的连接建立了,调用 channelActive(),并将打印一条消息。
+
+	public class ConnectHandler extends ChannelInboundHandlerAdapter {
+	    @Override
+	    public void channelActive(ChannelHandlerContext ctx) throws Exception {   //1
+	        System.out.println(
+	                "Client " + ctx.channel().remoteAddress() + " connected");
+	    }
+	}
+Future
+	Future 提供了另外一种通知应用操作已经完成的方式。这个对象作为一个异步操作结果的占位符,它将在将来的某个时候完成并提供结果。
