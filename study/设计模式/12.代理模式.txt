@@ -1,0 +1,77 @@
+核心价值：
+	通过代理对象访问目标对象，可以在目标对象的基础上，增加额外的功能操作，即扩展目标对象的功能。
+
+静态代理：
+	使用静态代理时,被代理对象与代理对象需要一起实现相同的接口或者是继承相同父类，因此要定义一个接口或抽象类.
+
+	优点：可以做到在不修改目标对象的功能前提下,对目标功能扩展.
+	缺点：因为代理对象需要与目标对象实现一样的接口,所以会有很多代理类,类太多.同时,一旦接口增加方法,目标对象与代理对象都要维护.而动态代理方式可以解决上面的问题
+
+动态代理（JDK代理、接口代理）：
+	动态代理的主要特点就是能够在程序运行时JVM才为被代理对象生成代理对象。
+	常说的动态代理也叫做JDK代理也是一种接口代理，JDK中生成代理对象的代理类就是Proxy，所在包是java.lang.reflect 
+	//给目标对象 生成一个代理对象
+		public Object getProxyInstance() {
+			
+			//说明
+			/*
+			 *  public static Object newProxyInstance(ClassLoader loader,
+	                                          Class<?>[] interfaces,
+	                                          InvocationHandler h)
+	                                          
+	            //1. ClassLoader loader ： 指定当前目标对象使用的类加载器, 获取加载器的方法固定
+	            //2. Class<?>[] interfaces: 目标对象实现的接口类型，使用泛型方法确认类型
+	            //3. InvocationHandler h : 事情处理，执行目标对象的方法时，会触发事情处理器方法, 会把当前执行的目标对象方法作为参数传入
+			 */
+			return Proxy.newProxyInstance(target.getClass().getClassLoader(), 
+					target.getClass().getInterfaces(), 
+					new InvocationHandler() {
+						
+						@Override
+						public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+							// TODO Auto-generated method stub
+							System.out.println("JDK代理开始~~");
+							//反射机制调用目标对象的方法
+							Object returnVal = method.invoke(target, args);
+							System.out.println("JDK代理提交");
+							return returnVal;
+						}
+					}); 
+		}
+
+        
+cglib代理：
+	cglib 基于继承 底层与JDK不同 表现区别在于cglib被代理类不需要实现接口
+
+
+		//维护一个目标对象
+		private Object target;
+		
+		//构造器，传入一个被代理的对象
+		public ProxyFactory(Object target) {
+			this.target = target;
+		}
+
+		//返回一个代理对象:  是 target 对象的代理对象
+		public Object getProxyInstance() {
+			//1. 创建一个工具类
+			Enhancer enhancer = new Enhancer();
+			//2. 设置父类
+			enhancer.setSuperclass(target.getClass());
+			//3. 设置回调函数
+			enhancer.setCallback(this);
+			//4. 创建子类对象，即代理对象
+			return enhancer.create();
+			
+		}
+		
+
+		//重写  intercept 方法，会调用目标对象的方法
+		@Override
+		public Object intercept(Object arg0, Method method, Object[] args, MethodProxy arg3) throws Throwable {
+			// TODO Auto-generated method stub
+			System.out.println("Cglib代理模式 ~~ 开始");
+			Object returnVal = method.invoke(target, args);
+			System.out.println("Cglib代理模式 ~~ 提交");
+			return returnVal;
+		}
