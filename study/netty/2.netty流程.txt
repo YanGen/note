@@ -1,0 +1,49 @@
+Netty运行时处理请求的流程 见图:2.netty流程.png
+
+说明：
+
+	每个 Eventloop 都有自己的一个 Selector，为了画图方便，改为共用一个 Selector
+	Boss Eventloop负责 ACCEPT 事件，他在启动的时候向 Selector 注册 ACCPET 事件和 ServerChannel，并且绑定端口
+	Work EventloopGroup 是一组 Work Eventloop 的集合，数量默认为 CPU 核心数 *2
+	Work Eventloop 本质上是一个线程，他有一个死循环，执行两种事件：READ事件和自己任务队列上面的事件
+	Work Eventloop 的任务队列上面的事件是可以在任何地方提交加入（通过 Future/Promise 的 addListener 方法提交任务）
+	Pipeline 是在我们启动的 Netty 的时候指定的，是我们的任务代码
+	Buffer 是缓冲区，缓冲我们的数据，并且一次写入。
+	Channel 是和用户连接的桥梁，往 Channel 写数据就是往用户电脑写数据
+	Pipeline 处理时可以选择同步模式还是异步模式，但无论如何最终都要刷写 Buffer ，最后要结束数据流。
+
+Netty Pipeline 流程
+
+InBound 操作的流水线
+	Inbound的方法一般由系统Netty帮我们调用
+	ChannelRegister: 客户 Channel 注册到 Eventloop 里面会发送事件 （第一次连接）
+	ChannelActive: 客户 Channel 连接的时候Channel会发送事件 （从未连接到已连接）
+	ChannelRead: 客户的数据已经存了一部分到系统缓冲区的时候会发送事件 （从未发送数据到已发送数据）
+	ChannelReadComplete： 缓冲区里面已经没有数据会发送事件（从发送数据到发送数据完成）
+	调用的流程是一致的，主要用到的是 ChannelRead
+
+	见图 2.InBound流程.png
+	说明：
+
+		HandlerContext是 Pipeline 的每一个节点，从而组成一个双向链表结构。每个 HandlerContext 包含以下内容：
+		自定义的Handler对象
+		用户 Channel
+		关联的 Eventloop
+		Inbound 和 OutBound 的触发器
+		ByteBuffer 内存分配器
+		添加 Channel Handler 的方法
+		在 Bootstrap 中 .childHandler() ch.pipeline().addLast()
+		可以添加 Inbound 和 OutBound
+
+OutBound操作流水线
+	bind 操作
+	connect 操作
+	disconnect 操作
+	read 操作 （一般不用，用Inbound的自动Read）
+	write 操作
+	deregister 操作
+
+	见图 2.OutBound流程.png
+
+异常处理流程 见图 2.netty异常流程.png
+业务流程 见图 2.netty业务流程.png （参考）
