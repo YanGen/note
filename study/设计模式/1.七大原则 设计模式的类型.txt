@@ -59,3 +59,12 @@
 	　　策略模式(Strategy)
 	　　模板方法模式(Template Method)
 	　　访问者模式(Visitor)
+
+三、UML类图
+	1、public 公用的 ：用+ 前缀表示 ，该属性对所有类可见
+
+	2、protected 受保护的：用 # 前缀表示，对该类的子孙可见
+
+	3、private 私有的：用- 前缀表示，只对该类本身可见
+
+	4、package(default) 包的：用 ~ 前缀表示，只对同一包声明的其他类可见
