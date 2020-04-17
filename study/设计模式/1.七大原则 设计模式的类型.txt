@@ -68,3 +68,10 @@
 	3、private 私有的：用- 前缀表示，只对该类本身可见
 
 	4、package(default) 包的：用 ~ 前缀表示，只对同一包声明的其他类可见
+
+	泛化、继承（Generalization）———————▶ 实线三角
+	实现（Realization）·······▶虚线三角
+	关联（Association) ———————>实线箭头
+	依赖 (Dependency)·······>虚线箭头
+	聚合（Aggregation）·······🔹虚线菱形
+	组合 (Composition) ——————🔹实线菱形

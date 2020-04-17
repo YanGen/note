@@ -1,0 +1,17 @@
+Java Iterator 用法 顶层接口只提供单向移动 （源码可low）
+	List<String> lst = new ArrayList<String>();
+    lst.add("aaa");
+    lst.add("bbb");
+    lst.add("ccc");
+    lst.add("ddd");
+    lst.add("eee");
+    lst.add("fff");
+    Iterator<String> iterator = lst.iterator();
+    //iterator.hasNext()如果存在元素的话返回true
+    while(iterator.hasNext()) {
+        //iterator.next()返回迭代的下一个元素
+        System.out.println(iterator.next());
+    }
+
+
+其实定义一个迭代器接口，具体可看类图，容器(狭义：集合)内部，聚合迭代器顶层接口并提供具体实现的迭代方法，让各种数据结构自行迭代，而返回一个实现的迭代器由顶层接收就可以统一迭代了。
