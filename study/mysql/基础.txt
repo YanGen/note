@@ -42,4 +42,13 @@ SQL 性能分析
 		system>const>eq_ref>ref>range>index>all 前提有索引
 		system、const为理想情况 实际中一般只能优化到ref、range
 
+		system/const ：结果只有一条数据
+		eq_ref:结果多条，但每条唯一
+		ref：结果多条，不唯一
+		range：检索指定范围了，（between ，> < >= ）
+		index:查询全部索引数据
+		all：扫描全表数据
+		由上往下 效率降低
+		
+
 
