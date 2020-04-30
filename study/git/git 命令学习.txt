@@ -1,0 +1,21 @@
+可视化学习网址 https://learngitbranching.js.org/?locale=zh_CN
+
+git commit 提交
+git branch <分支名> 新建分支
+git checkout <分支名> 切换分支
+git merge <分支名> 将其他分支合并到当前分支
+git rebase <分支名> 将当前分支合并到其他分支，实际上就是取出当前分支一系列的提交记录，"复制"它们，然后在另外一个分实逐个的执行。
+	举个栗子：
+		有分支 dev 作为当前分支，master作为主线分支。
+		执行git rebase master 会将dev 一系列提交在mater执行一次 master指针指向不变，而此时dev的指针指向已经是 master+dev分支的一系列提交，如有要让master和dev处于统一位置只需要切换到master反过来执行 git rebase dev 即可。
+
+HEAD 是一个对当前检出记录的符号引用 —— 也就是指向你正在其基础上进行工作的提交记录。
+git checkout <记录> 将head 切换（分离）到某记录
+git checkout HEAD^ 在head指向位置 后退一步
+git checkout HEAD~4 ~相对引用 在head指向位置 后退四步
+
+git branch -f master HEAD~3
+	使用相对引用最多的就是移动分支。可以直接使用 -f 选项让分支指向另一个提交
+	上面的命令会将 master 分支强制指向 HEAD 的第 3 级父记录提交。
+
+
