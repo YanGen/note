@@ -8,6 +8,8 @@
 		b.扩展类加载器（Extension ClassLoader） -- Java实现 JVM自带 Java系统自定义
 			用于从扩展目录中加载类库，用户可根据需要将jar包至于扩展目录下。
 		c.系统/应用程序 类加载器（System/App ClassLoader） -- Java实现 JVM自带 Java系统自定义
+			负责加载classpath或其他系统属性
+			通过ClassLoader#getSystemClassLoader
 		d.用户自定义加载器（User Defind ClassLoader） -- Java实现 个体用户自定义
 
 		四者非继承关系，而是包含关系（可通过getParent拿到），扩展类加载器、系统类加载器和用户自定义加载器继承于一个基类 ClassLoader。
