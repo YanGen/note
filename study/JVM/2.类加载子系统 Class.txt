@@ -1,0 +1,55 @@
+1.Class
+	得到一个Class对象
+		1.Object.getClass
+			"gg".getClass();
+		2. .class
+			Integer.class.newInstance();
+		3.Class.forName()
+			Class<?> c = Class.forName("java.lang.String");
+		4.静态属性 TYPE （内部是适用了 .class 获取）
+			Class<Integer> integerWrapper = Integer.TYPE;
+	已经有了Class 希望从这个Class获取相关Class
+		1.Class.getSuperclass()
+			返回调用类的父类
+		2.Class.getClasses()
+			返回调用类的所有公共类、接口、枚举组成的 Class 数组，包括继承
+		3.Class.getDeclaredClasses()
+			返回调用类显式声明的所有类、接口、枚举组成的 Class 数组
+		4.Class.getDeclaringClass()
+		  java.lang.reflect.Field.getDeclaringClass()
+		  java.lang.reflect.Method.getDeclaringClass()
+		  java.lang.reflect.Constructor.getDeclaringClass()
+			返回类/属性/方法/构造器所在的类
+
+	Class 的修饰符：Modifier
+		一个 Class 可以被以下修饰符的一种或者多种修饰：
+			访问权限控制符：public, protected, private
+			抽象的、需要实现的：abstract
+			限制只能有一个实例的：static
+			不允许修改的：final
+			线程同步锁：synchronized
+			原生函数：native
+			采用严格的浮点精度：strictfp
+			接口
+			注解
+			ps:当然上面的修饰符不是所有 Class 都可以修饰，比如
+				Interface 不能是 final 的
+				enum 不能是 abstract 的
+
+		java.lang.reflect.Modifier 提供了对 Class 修饰符的解码，我们可以使用 Class.getModifiers() 获得调用类的修饰符的二进制值，然后使用 Modifier.toString(int modifiers) 将二进制值转换为字符串
+
+	Class 的成员：Member
+		java.lang.reflect.Member 是一个接口，代表 Class 的成员，每个成员都有类型，分为是否从父类继承，还有是否可以直接访问。
+		Member 有三个实现类：
+			java.lang.reflect.Constructor：表示该 Class 的构造函数
+			java.lang.reflect.Field：表示该 Class 的成员变量
+			java.lang.reflect.Method：表示该 Class 的成员方法
+			Constructor 例子：
+				a.采用默认无参的构造器
+					Class.newInstance() 
+				b.采用带参构造器
+					String name = "com.hw.bean.Person";
+				    Class clazz = Class.forName(name);
+				    Constructor constructor = clazz.getConstructor(String.class, int.class);
+				    System.out.println(constructor);
+				    Object obj = constructor.newInstance("小明", 22);
