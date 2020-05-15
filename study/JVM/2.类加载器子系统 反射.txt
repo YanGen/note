@@ -1,0 +1,103 @@
+1.Class 反射入口
+	得到一个Class对象
+		1.Object.getClass
+			"gg".getClass();
+		2. .class
+			Integer.class.newInstance();
+		3.Class.forName()
+			Class<?> c = Class.forName("java.lang.String");
+		4.静态属性 TYPE （内部是适用了 .class 获取）
+			Class<Integer> integerWrapper = Integer.TYPE;
+	已经有了Class 希望从这个Class获取相关Class
+		1.Class.getSuperclass()
+			返回调用类的父类
+		2.Class.getClasses()
+			返回调用类的所有公共类、接口、枚举组成的 Class 数组，包括继承
+		3.Class.getDeclaredClasses()
+			返回调用类显式声明的所有类、接口、枚举组成的 Class 数组
+		4.Class.getDeclaringClass()
+		  java.lang.reflect.Field.getDeclaringClass()
+		  java.lang.reflect.Method.getDeclaringClass()
+		  java.lang.reflect.Constructor.getDeclaringClass()
+			返回类/属性/方法/构造器所在的类
+
+	Class 的修饰符：Modifier
+		一个 Class 可以被以下修饰符的一种或者多种修饰：
+			访问权限控制符：public, protected, private
+			抽象的、需要实现的：abstract
+			限制只能有一个实例的：static
+			不允许修改的：final
+			线程同步锁：synchronized
+			原生函数：native
+			采用严格的浮点精度：strictfp
+			接口
+			注解
+			ps:当然上面的修饰符不是所有 Class 都可以修饰，比如
+				Interface 不能是 final 的
+				enum 不能是 abstract 的
+
+		java.lang.reflect.Modifier 提供了对 Class 修饰符的解码，我们可以使用 Class.getModifiers() 获得调用类的修饰符的二进制值，然后使用 Modifier.toString(int modifiers) 将二进制值转换为字符串
+
+	Class 的成员：Member
+		java.lang.reflect.Member 是一个接口，代表 Class 的成员，每个成员都有类型，分为是否从父类继承，还有是否可以直接访问。
+		Member 有三个实现类：
+			java.lang.reflect.Constructor：表示该 Class 的构造函数
+			java.lang.reflect.Field：表示该 Class 的成员变量
+			java.lang.reflect.Method：表示该 Class 的成员方法
+			Constructor 例子：
+				a.采用默认无参的构造器
+					Class.newInstance() 
+				b.采用带参构造器
+					String name = "com.hw.bean.Person";
+				    Class clazz = Class.forName(name);
+				    Constructor constructor = clazz.getConstructor(String.class, int.class);
+				    System.out.println(constructor);
+				    Object obj = constructor.newInstance("小明", 22);
+
+2.Methor 成员方法(Class Member 的一个实现)
+	每个方法都由 修饰符、返回值、参数、注解和抛出的异常组成（继承的方法，包括重载、重写和隐藏的会被编译器强制执行，这些方法都无法反射。）
+	通过类的Class实例 getDeclaredMethods() 获取声明的方法数组 Method[]，通过其中一个method实例的一些方法可以获得方法信息
+	如查看当前类 main() 的信息
+		     	 Method name:   main
+	         toGenericString:   public static void net.sxkeji.shixinandroiddemo2.test.reflection.MethodTypeSpy.main(java.lang.String[]) throws java.lang.ClassNotFoundException
+	               Modifiers:   public static
+	              ReturnType:   void
+	    getGenericReturnType:   void
+	           ParameterType:   class [Ljava.lang.String;
+	    GenericParameterType:   class [Ljava.lang.String;
+	          ExceptionTypes:   class java.lang.ClassNotFoundException
+	   GenericExceptionTypes:   class java.lang.ClassNotFoundException
+	              Annotation:   @java.lang.Deprecated()
+	          AnnotationType:   interface java.lang.Deprecated
+
+	Method invoke()通过反射调用方法
+		使用 java.lang.reflect.Method.invoke() 方法来反射调用一个方法
+
+		public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException,InvocationTargetException{}
+
+		例子:
+			Class cls-> Method method
+			cls newInstance() -> object
+			method invoke(object,args)
+
+		上述例子在其他类一个方法中执行 这个方法可以称为代理类的代理方法 而如果代理的方法固定则成为了静态代理 若Method由参数动态传入则成为了动态代理（JDK）
+
+3.Field 成员属性
+	描述的是类的属性信息，可以获取当前对象的成员变量的类型或对成员变量重新设值
+	获取Field方式：
+		Class.getFields(): 获取类中public类型的属性，返回一个包含某些 Field 对象的数组，该数组包含此 Class 对象所表示的类或接口的所有可访问公共字段
+		getDeclaredFields(): 获取类中所有的属性(public、protected、default、private)，但不包括继承的属性，返回 Field 对象的一个数组
+		getField(String name)： 获取类特定的方法，name参数指定了属性的名称
+		getDeclaredField(String name): 获取类特定的方法，name参数指定了属性的名称
+
+	Field 类对象常用方法
+		获取变量的类型：
+			Field.getType()：返回这个变量的类型
+			Field.getGenericType()：如果当前属性有签名属性类型就返回，否则就返回 Field.getType()
+			isEnumConstant() ： 判断这个属性是否是枚举类
+		获取成员变量的修饰符
+			Field.getModifiers()  以整数形式返回由此 Field 对象表示的字段的 Java 语言修饰符
+		获取和修改成员变量的值
+			getName() ： 获取属性的名字
+			get(Object obj) 返回指定对象obj上此 Field 表示的字段的值
+			set(Object obj, Object value) 将指定对象变量上此 Field 对象表示的字段设置为指定的新值
