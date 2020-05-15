@@ -35,7 +35,6 @@
 			ps:当然上面的修饰符不是所有 Class 都可以修饰，比如
 				Interface 不能是 final 的
 				enum 不能是 abstract 的
-
 		java.lang.reflect.Modifier 提供了对 Class 修饰符的解码，我们可以使用 Class.getModifiers() 获得调用类的修饰符的二进制值，然后使用 Modifier.toString(int modifiers) 将二进制值转换为字符串
 
 	Class 的成员：Member
