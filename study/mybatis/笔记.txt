@@ -179,170 +179,88 @@ Mybatis 的 Xml 映射文件中，不同的 Xml 映射文件，id 是否可以�
 	不同的 Xml 映射文件，如果配置了 namespace，那么 id 可以重复；如果没有配置 namespace，那么 id 不能重复；原因就是 namespace+id 是作为Map <String, MapperStatement>的 key使用的，如果没有 namespace，就剩下 id，那么，id 重复会导致数据互相覆盖。有了 namespace，自然 id 就可以重复，namespace 不同，namespace+id 自然也就不同
 
 为什么说 Mybatis 是半自动 ORM 映射工具？它与全自动的区别在哪里?#
-Hibernate 属于全自动 ORM 映射工具，使用 Hibernate 查询关联对象或者关联
-集合对象时，可以根据对象关系模型直接获取，所以它是全自动的。而 Mybatis
-在查询关联对象或关联集合对象时，需要手动编写 sql 来完成，所以，称之为半自
-动 ORM 映射工具
+	Hibernate 属于全自动 ORM 映射工具，使用 Hibernate 查询关联对象或者关联
+	集合对象时，可以根据对象关系模型直接获取，所以它是全自动的。而 Mybatis
+	在查询关联对象或关联集合对象时，需要手动编写 sql 来完成，所以，称之为半自
+	动 ORM 映射工具
 
 一对一、一对多的关联查询#
-Copy
-<mapper namespace="com.lcb.mapping.userMapper">
-<!--association 一对一关联查询 -->
-<select id="getClass" parameterType="int" resultMap="ClassesResultMap">
-    select * from class c,teacher t where c.teacher_id=t.t_id and
-    c.c_id=#{id}
-</select>
-<resultMap type="com.lcb.user.Classes" id="ClassesResultMap">
-<!-- 实体类的字段名和数据表的字段名映射 -->
-<id property="id" column="c_id"/>
-    <result property="name" column="c_name"/>
-    <association property="teacher" javaType="com.lcb.user.Teacher">
-    <id property="id" column="t_id"/>
-    <result property="name" column="t_name"/>
-    </association>
-    </resultMap>
-<!--collection 一对多关联查询 -->
-<select id="getClass2" parameterType="int"
-resultMap="ClassesResultMap2">
-select * from class c,teacher t,student s where c.teacher_id=t.t_id
-and c.c_id=s.class_id and c.c_id=#{id}
-</select>
-<resultMap type="com.lcb.user.Classes" id="ClassesResultMap2">
-<id property="id" column="c_id"/>
-<result property="name" column="c_name"/>
-<association property="teacher"
-javaType="com.lcb.user.Teacher">
-<id property="id" column="t_id"/>
-<result property="name" column="t_name"/>
-</association>
-<collection property="student"
-ofType="com.lcb.user.Student">
-<id property="id" column="s_id"/>
-<result property="name" column="s_name"/>
-</collection>
-</resultMap>
-</mapper>
+	<mapper namespace="com.lcb.mapping.userMapper">
+		<!--association 一对一关联查询 -->
+		<select id="getClass" parameterType="int" resultMap="ClassesResultMap">
+		    select * from class c,teacher t where c.teacher_id=t.t_id and
+		    c.c_id=#{id}
+		</select>
+			<resultMap type="com.lcb.user.Classes" id="ClassesResultMap">
+			<!-- 实体类的字段名和数据表的字段名映射 -->
+			<id property="id" column="c_id"/>
+			    <result property="name" column="c_name"/>
+			    <association property="teacher" javaType="com.lcb.user.Teacher">
+			    <id property="id" column="t_id"/>
+			    <result property="name" column="t_name"/>
+			    </association>
+			    </resultMap>
+		<!--collection 一对多关联查询 -->
+		<select id="getClass2" parameterType="int"
+		resultMap="ClassesResultMap2">
+		select * from class c,teacher t,student s where c.teacher_id=t.t_id
+		and c.c_id=s.class_id and c.c_id=#{id}
+		</select>
+			<resultMap type="com.lcb.user.Classes" id="ClassesResultMap2">
+			<id property="id" column="c_id"/>
+			<result property="name" column="c_name"/>
+			<association property="teacher"
+			javaType="com.lcb.user.Teacher">
+			<id property="id" column="t_id"/>
+			<result property="name" column="t_name"/>
+			</association>
+			<collection property="student"
+			ofType="com.lcb.user.Student">
+			<id property="id" column="s_id"/>
+			<result property="name" column="s_name"/>
+			</collection>
+		</resultMap>
+	</mapper>
 MyBatis 实现一对一有几种方式?具体怎么操作的？#
-有联合查询和嵌套查询,联合查询是几个表联合查询,只查询一次, 通过在
-resultMap 里面配置 association 节点配置一对一的类就可以完成；
-嵌套查询是先查一个表，根据这个表里面的结果的 外键 id，去再另外一个表里面
-查询数据,也是通过 association 配置，但另外一个表的查询通过 select 属性配置。
+	有联合查询和嵌套查询,联合查询是几个表联合查询,只查询一次, 通过在
+	resultMap 里面配置 association 节点配置一对一的类就可以完成；
+	嵌套查询是先查一个表，根据这个表里面的结果的 外键 id，去再另外一个表里面
+	查询数据,也是通过 association 配置，但另外一个表的查询通过 select 属性配置。
 
 MyBatis 实现一对多有几种方式,怎么操作的？#
-有联合查询和嵌套查询。联合查询是几个表联合查询,只查询一次,通过在
-resultMap 里面的 collection 节点配置一对多的类就可以完成；嵌套查询是先查
-一个表,根据这个表里面的 结果的外键 id,去再另外一个表里面查询数据,也是通过
-配置 collection,但另外一个表的查询通过 select 节点配置。
+	有联合查询和嵌套查询。联合查询是几个表联合查询,只查询一次,通过在
+	resultMap 里面的 collection 节点配置一对多的类就可以完成；嵌套查询是先查
+	一个表,根据这个表里面的 结果的外键 id,去再另外一个表里面查询数据,也是通过
+	配置 collection,但另外一个表的查询通过 select 节点配置。
 
-Mybatis 是否支持延迟加载？如果支持，它的实现原理是什么？#
-Mybatis 仅支持 association 关联对象和 collection 关联集合对象的延迟加
-载，association 指的就是一对一，collection 指的就是一对多查询。在 Mybatis
-配置文件中，可以配置是否启用延迟加载 lazyLoadingEnabled=true|false。
-它的原理是，使用 CGLIB 创建目标对象的代理对象，当调用目标方法时，进入拦
-截器方法，比如调用 a.getB().getName()，拦截器 invoke()方法发现 a.getB()是
-null 值，那么就会单独发送事先保存好的查询关联 B 对象的 sql，把 B 查询上来，
-然后调用 a.setB(b)，于是 a 的对象 b 属性就有值了，接着完成 a.getB().getName()
-方法的调用。这就是延迟加载的基本原理。
-当然了，不光是 Mybatis，几乎所有的包括 Hibernate，支持延迟加载的原理都
-是一样的。
 
 Mybatis 的一级、二级缓存:#
-1）一级缓存: 基于 PerpetualCache 的 HashMap 本地缓存，其存储作用域为
-Session，当 Session flush 或 close 之后，该 Session 中的所有 Cache 就
-将清空，默认打开一级缓存。
-2）二级缓存与一级缓存其机制相同，默认也是采用 PerpetualCache，HashMap
-存储，不同在于其存储作用域为 Mapper(Namespace)，并且可自定义存储源，
-如 Ehcache。默认不打开二级缓存，要开启二级缓存，使用二级缓存属性类需要
-实现 Serializable 序列化接口(可用来保存对象的状态),可在它的映射文件中配置
-<cache/>
-3）对于缓存数据更新机制，当某一个作用域(一级缓存 Session/二级缓存
-Namespaces)的进行了 C/U/D 操作后，默认该作用域下所有 select 中的缓存将
-被 clear。
+	1）一级缓存: 基于 PerpetualCache 的 HashMap 本地缓存，其存储作用域为
+	Session，当 Session flush 或 close 之后，该 Session 中的所有 Cache 就
+	将清空，默认打开一级缓存。
+	2）二级缓存与一级缓存其机制相同，默认也是采用 PerpetualCache，HashMap
+	存储，不同在于其存储作用域为 Mapper(Namespace)，并且可自定义存储源，
+	如 Ehcache。默认不打开二级缓存，要开启二级缓存，使用二级缓存属性类需要
+	实现 Serializable 序列化接口(可用来保存对象的状态),可在它的映射文件中配置
+	<cache/>
+	3）对于缓存数据更新机制，当某一个作用域(一级缓存 Session/二级缓存
+	Namespaces)的进行了 C/U/D 操作后，默认该作用域下所有 select 中的缓存将
+	被 clear。
 
 什么是 MyBatis 的接口绑定？有哪些实现方式？#
-接口绑定，就是在 MyBatis 中任意定义接口,然后把接口里面的方法和 SQL 语句绑
-定, 我们直接调用接口方法就可以,这样比起原来了 SqlSession 提供的方法我们可
-以有更加灵活的选择和设置。
-接口绑定有两种实现方式,一种是通过注解绑定，就是在接口的方法上面加上
-@Select、@Update 等注解，里面包含 Sql 语句来绑定；另外一种就是通过 xml
-里面写 SQL 来绑定, 在这种情况下,要指定 xml 映射文件里面的 namespace 必须
-为接口的全路径名。当 Sql 语句比较简单时候,用注解绑定, 当 SQL 语句比较复杂
-时候,用 xml 绑定,一般用 xml 绑定的比较多。
+	接口绑定，就是在 MyBatis 中任意定义接口,然后把接口里面的方法和 SQL 语句绑
+	定, 我们直接调用接口方法就可以,这样比起原来了 SqlSession 提供的方法我们可
+	以有更加灵活的选择和设置。
+	接口绑定有两种实现方式,一种是通过注解绑定，就是在接口的方法上面加上
+	@Select、@Update 等注解，里面包含 Sql 语句来绑定；另外一种就是通过 xml
+	里面写 SQL 来绑定, 在这种情况下,要指定 xml 映射文件里面的 namespace 必须
+	为接口的全路径名。当 Sql 语句比较简单时候,用注解绑定, 当 SQL 语句比较复杂
+	时候,用 xml 绑定,一般用 xml 绑定的比较多。
 
 使用 MyBatis 的 mapper 接口调用时有哪些要求？#
-1、Mapper 接口方法名和 mapper.xml 中定义的每个 sql 的 id 相同；
-2、Mapper 接口方法的输入参数类型和 mapper.xml 中定义的每个 sql 的
-parameterType 的类型相同；
-3、Mapper 接口方法的输出参数类型和 mapper.xml 中定义的每个 sql 的
-resultType 的类型相同；
-4、Mapper.xml 文件中的 namespace 即是 mapper 接口的类路径。
-
-Mapper 编写有哪几种方式？#
-第一种：接口实现类继承 SqlSessionDaoSupport：使用此种方法需要编写
-mapper 接口，mapper 接口实现类、mapper.xml 文件。
-1、在 sqlMapConfig.xml 中配置 mapper.xml 的位置
-
-Copy
-<mappers>
-    <mapper resource="mapper.xml 文件的地址" />
-    <mapper resource="mapper.xml 文件的地址" />
-</mappers>
-1、定义 mapper 接口
-3、实现类集成 SqlSessionDaoSupport
-mapper 方法中可以 this.getSqlSession()进行数据增删改查。
-4、spring 配置
-
-Copy
-<bean id=" " class="mapper 接口的实现">
-<property name="sqlSessionFactory"
-ref="sqlSessionFactory"></property>
-</bean>
-使用 org.mybatis.spring.mapper.MapperFactoryBean ：
-在 sqlMapConfig.xml 中配置 mapper.xml 的位置，如果 mapper.xml 和
-mappre 接口的名称相同且在同一个目录，这里可以不用配置
-
-Copy
-<mappers>
-<mapper resource="mapper.xml 文件的地址" />
-<mapper resource="mapper.xml 文件的地址" />
-</mappers>
-定义 mapper 接口：
-1、mapper.xml 中的 namespace 为 mapper 接口的地址
-2、mapper 接口中的方法名和 mapper.xml 中的定义的 statement 的 id 保持一
-致
-3、Spring 中定义
-
-Copy
-<bean id="" class="org.mybatis.spring.mapper.MapperFactoryBean">
-<property name="mapperInterface" value="mapper 接口地址" />
-<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-</bean>
-使用 mapper 扫描器：
-
-1、mapper.xml 文件编写：
-mapper.xml 中的 namespace 为 mapper 接口的地址；
-mapper 接口中的方法名和 mapper.xml 中的定义的 statement 的 id 保持一致；
-如果将 mapper.xml 和 mapper接口的名称保持一致则不用在 sqlMapConfig.xml
-中进行配置。
-2、定义 mapper 接口：
-注意 mapper.xml 的文件名和 mapper 的接口名称保持一致，且放在同一个目录
-3、配置 mapper 扫描器：
-
-Copy
-<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-<property name="basePackage" value="mapper 接口包地址
-"></property>
-<property name="sqlSessionFactoryBeanName"
-value="sqlSessionFactory"/>
-</bean>
-4、使用扫描器后从 spring 容器中获取 mapper 的实现对象。
-
-简述 Mybatis 的插件运行原理，以及如何编写一个插件。#
-Mybatis 仅可以编写针对 ParameterHandler、ResultSetHandler、
-StatementHandler、Executor 这 4 种接口的插件，Mybatis 使用 JDK 的动态代
-理，为需要拦截的接口生成代理对象以实现接口方法拦截功能，每当执行这 4 种
-接口对象的方法时，就会进入拦截方法，具体就是 InvocationHandler 的 invoke()
-方法，当然，只会拦截那些你指定需要拦截的方法。
-编写插件：实现 Mybatis 的 Interceptor 接口并复写 intercept()方法，然后在给
-插件编写注解，指定要拦截哪一个接口的哪些方法即可，记住，别忘了在配置文
-件中配置你编写的插件。
+	1、Mapper 接口方法名和 mapper.xml 中定义的每个 sql 的 id 相同；
+	2、Mapper 接口方法的输入参数类型和 mapper.xml 中定义的每个 sql 的
+	parameterType 的类型相同；
+	3、Mapper 接口方法的输出参数类型和 mapper.xml 中定义的每个 sql 的
+	resultType 的类型相同；
+	4、Mapper.xml 文件中的 namespace 即是 mapper 接口的类路径。
