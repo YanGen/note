@@ -1,0 +1,7 @@
+一直以来我们遇不到对的人，是因为我们不能改变错误的自己。
+
+1.eureka 注册问题 Cannot execute request on any known server
+	检查注册中心
+		eureka.client.registerWithEureka=false   #是否要注册到其他Server上   registerWithEureka等同于register_with_eureka
+		eureka.client.fetchRegistry=false        #是否需要拉取服务信息       fetchRegistry等同于 fetch-registry
+	检查在注册中心的注册过程（监听代码）
