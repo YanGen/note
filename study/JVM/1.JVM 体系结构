@@ -12,3 +12,4 @@
 	前端编译：把Java源码文件（.java）编译成Class文件(.class)的过程。
 
 	后端编译：通过Java虚拟机（JVM）内置的即时编译器（Just In Time Compiler，JIT编译器）；在运行时把Class文件字节码编译成本地机器码（机器指令）。
+ 
