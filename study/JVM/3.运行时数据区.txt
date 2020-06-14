@@ -49,5 +49,16 @@
 
 
 		4.方法返回地址（Return Address），或方法正常、异常退出指向
+			方法退出两种方式：正常执行结束和出现未处理的异常。
+			无论以哪种方式退出，都需要回到原调用此方法的调用位置，而方法返回地址记录调用者的pc计数器的值，即调用该方法的指令的下一条指令。
+
+			方法返回指令：
+				ireturn boolean 、byte、char、short和int
+				lreturn freturn dreturn
+				areturn 对象引用返回
+				return void、实例初始化方法、类和接口的初始化方法
+
 		5.一些附加信息
-		
+	虚拟机栈面试题：
+		常见异常：
+			SOF：栈溢出 OOM：内存溢出	
