@@ -68,6 +68,7 @@
 	《Java 虚拟机规范》规定，堆可以在物理上不联系，但在逻辑上应该被视为连续的。
 	“几乎”所有对象实例和数组都在堆分配内存。
 
+	通过 -XX:+PrintGCDetails 显示垃圾回收细节
 	通过 -Xms 设置堆区初始化内存
 	通过 -Xmx 设置堆区最大内存
 	通过 -Xmn 设置新生代的空间大小(和下面设置 新老比例参数冲突 一般不设置)
@@ -81,6 +82,17 @@
 			幸存2区 to
 		老年代 ParOldGen
 		元空间 MetaSpace (ps:jdk7到8内存结构主要变化是 永久代->元空间)
+
+	GC garbage collect（STW stop the world）
+		Partial GC 部分收集
+			Minor GC/Young GC 新生代收集(Eden/S1/S2)
+				Eden满触发
+			Major GC/Old GC 老年代收集(Old)
+			Miexd GC 混合GC
+		Full GC 整堆收集(方法区和Java 堆)
+
+
+
 
 	TLAB Thread Local Allocation Buffer 
 		即线程本地分配缓存区，这是一个在伊甸园中、线程专用的内存分配区域。TLAB空间的内存非常小，缺省情况下仅占有整个Eden空间的1%。
