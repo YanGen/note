@@ -81,3 +81,45 @@
 			幸存2区 to
 		老年代 ParOldGen
 		元空间 MetaSpace (ps:jdk7到8内存结构主要变化是 永久代->元空间)
+
+	TLAB Thread Local Allocation Buffer 
+		即线程本地分配缓存区，这是一个在伊甸园中、线程专用的内存分配区域。TLAB空间的内存非常小，缺省情况下仅占有整个Eden空间的1%。
+
+		New对象与指针碰撞
+			堆空间是数据共享区域，如果实例对象时同时申请一块地址则产生碰撞。
+
+		TLAB 分配
+			线程创建对象优先在本TLAB区分配空间，如果不成功则在Eden其他区域进行加锁分配。
+	通过 -XX:+PrintFlagsInitial 查看所有参数的默认初始值
+	通过 -XX:+PrintFlagsFinal 查看所有参数的最终值
+		具体查看某个参数的指令
+			jps 查看当前运行的进程
+			jinfo -flag SurvivorRatio 进程id
+
+	对象一定在堆上分配吗？
+		编译器再编译期根据逃逸分析结果，如果经过逃逸分析后一个对象并没有逃逸出方法的话，那么就可能被优化成在栈上分配。这样就无需再堆上分配内存，也无须进行垃圾回收。
+
+		-XX:+DoEscapeAnalysis 开启逃逸分析 默认开启
+		-XX:+EliminateLocks 开启同步消除 默认开启
+		-XX:+EliminateAllocations 开启标量替换 默认开启
+
+		虚拟机逃逸分析机制带来的代码优化 (逃逸分析如今仍不成熟)
+			栈上分配
+				使对象不发生逃逸，从而堆分配转栈分配。
+			同步省略（锁消除）
+				一个对象被分析只能从一条线程中被访问，则对于这个对象的所有操作不同步。
+				同步省略时在运行时省略而非编译期，例如使用synchronized加锁编译后，在字节码指令中仍能看到 monitorenter monitorexit。
+			标量替换（变形栈上分配）
+				标量(scalar):指一个无法再分解成更小数据的数据，Java中原始数据类型就是标量。
+				聚合量(Aggregate):指Java对象。
+				对象可以分解成其他聚合量和标量，若经过逃逸分析发现这个对象未逃逸，则把这个对象肢解成若干标量来代替，即标量替换。
+				例如：
+					User{int id;String name;}
+
+					void method(){
+						User user = new User(1,"name");
+					}
+					user 可以被肢解成标量存储在局部变量表中。
+
+
+
