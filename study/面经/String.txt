@@ -1,0 +1,54 @@
+实例
+	String s = "str";
+		潜意识会被认为是基本数据类型,因为可以通过字面量的形式实例化String类。
+	String s = new String("str");
+
+不可变性
+	字符串常量池不可变性
+		底层为数组(1.8及以前char -> 1.9开始byte),数组创建则确定了大小固不可改变
+	字符串常量池不存在重复串
+		String pool是一个固定大小的Hashtable(数组+链表),字符串多了会造成Hash冲突严重导致链表变长，使String.intern性能下降
+
+String 是封装类 传参跟基本数据类型一样是值传递 
+String 如果编译器无法确定值那么结果会被存储在堆中。拼接原理是StringBuilder。
+
+例子1
+	String s1 = "a" + "b" +"c"; 编译期会被优化成 abc
+	String s2 = "abc";
+	s1 == s2 ture 
+	s1 equals s2 ture
+例子2 
+	public void change(String s1){
+		s1 = "change"; // 不改变方法体外的，只会新开辟地址存储该对象
+	}
+例子3
+	String s1 = "nihao";
+	String s2 = "hao";
+	String s3 = "ni";
+
+	s1 == "ni" + s2; //false
+	s1 == s3 + s2;// false
+	s3 + s2 细节如下(s1 或s2是引用(常量) 非字面量非常量)
+	StringBuilder s = new StringBuilder();
+	s.append("ni");
+	s.append("hao");
+	s.toString(); // return new String(xxx);
+	-----------------------------
+
+	ps:若s1 + s2是常量，既定义时加上final修饰 视为字面量相加在编译器优化 如例子1
+
+
+	final String s1 = "nihao";
+	final String s2 = "hao";
+	final String s3 = "ni";
+
+	s1 == "ni" + s2; //ture
+	s1 == s3 + s2;// ture
+
+StringBuider
+	在需要进行大量str 拼接的时候，StringBuilder比String的效率高的多，但StringBuilder线程不安全，StringBuilder底层是char数组默认长度16，若长度不够则需进行内部扩容，实际开发中如果基本确定字符串最终拼接长度不高于某个限定值可以预设初始长度，这样可以节约在扩容时所需要的耗时，意思是指定的初始大小合理的话，效率将会高些。
+	ps: 默认大小参数capacity,new StringBuilder(capacity);指定
+
+intern():
+	判断字符串常量池是否存在该串的值如果在则直接返回地址，如果不在则在常量池新开辟一份并返回地址。
+	String s8 = s6.intern();
