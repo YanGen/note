@@ -1,7 +1,9 @@
 实例
-	String s = "str";
+	String s1 = "str";
 		潜意识会被认为是基本数据类型,因为可以通过字面量的形式实例化String类。
-	String s = new String("str");
+	String s2 = new String("str");
+
+	ps:上述两种实例方式区别在于 s1直接指向字符串常量池而s2指向堆区 故s1==s2 Flase
 
 不可变性
 	字符串常量池不可变性
@@ -52,3 +54,16 @@ StringBuider
 intern():
 	判断字符串常量池是否存在该串的值如果在则直接返回地址，如果不在则在常量池新开辟一份并返回地址。
 	String s8 = s6.intern();
+
+new String("a") 共创建了多少个对象？ 2
+	1.new String("a") 引用
+	2.常量池创建常量 a
+
+new String("a") + new String("b")共创建了多少个对象？ 6
+	1.new StringBuilder();
+	2.new String("a") 引用
+	3.常量池创建常量 a
+	4.new String("b") 引用
+	5.常量池创建常量 b
+	6.StringBuilder 调toString 后 new String("ab")
+		ps:此时已经不在编译期，不会在常量池创建常量ab.
