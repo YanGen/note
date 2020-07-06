@@ -67,3 +67,4 @@ new String("a") + new String("b")共创建了多少个对象？ 6
 	5.常量池创建常量 b
 	6.StringBuilder 调toString 后 new String("ab")
 		ps:此时已经不在编译期，不会在常量池创建常量ab.
+test
