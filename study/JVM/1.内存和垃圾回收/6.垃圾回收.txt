@@ -103,3 +103,54 @@ STW stop the world
 	安全点和安全区域
 		程序运行，不是每个时刻都能停下，只有在特定位置才能停下来GC。
 		安全点和区域指某个运行点或运行片段上，对象引用关系不会发生变化，在这个区域中GC是安全的。
+
+引用 强度依次递减
+	强引用 可达，不回收
+		Object obj = new Object()
+		只要强引用关系存在，垃圾收集器永远不会回收该对象。
+	软引用 可达，不足回收
+		空间不足时(溢出前)，将会把这些对象列入回收范围之内进行二次回收，此次回收后空间仍然不够存放新对象则OOM。
+	弱引用 可达，发现既回收
+		无论空间是否足够，只能生存到下一次垃圾回收之前。
+	虚引用 不可达，对象回收跟踪
+		无法通过引用获得实例,主要用于对象回收跟踪和通知。
+
+垃圾回收器 GC garbage collector
+	评价GC性能指标(两大指标)
+		吞吐量:运行用
+		户代码的时间占总运行时间比例
+		暂停时间(延迟)：GC时间
+	7款经典垃圾收集器
+		串行回收：Serial、Serial Old
+		并行回收：ParNew、Paeallel Scavenge、Parallel Old
+		并发回收：CMS、G1
+
+		ps:根据需要场景不同，而选择不同垃圾收集器及收集器组合。
+
+	Serial 新生代、Serial Old老年代
+		若限定于单核CPU，优势简单而高效
+		设置 -XX:+UseSerialGC
+		使用场景
+			最小化使用内存和开销
+
+	ParNew 新生代
+		-XX:+UseParNewGC 设置
+		-XX:+ParallelGCThreads 设置线程数量
+
+	Paeallel 新生代
+		-XX:+UseParallelGC
+	Paeallel Old 老年代
+		-XX:+UseParallelOldGC
+		Paeallel吞吐量优先，自适应调节策略
+		使用场景
+			最大化吞吐量
+	
+	CMS Concurrent-Mark-Sweep 并发-标记-清除 老年代收集器
+		回收线程与用户线程同时工作，关注GC暂停时间、低延迟优先
+		使用场景
+			最小化暂停时间
+
+	G1 Garbage First
+		区域化分代式
+			将内存划分多个区域 region
+
