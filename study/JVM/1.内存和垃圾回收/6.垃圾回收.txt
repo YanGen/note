@@ -150,7 +150,7 @@ STW stop the world
 		使用场景
 			最小化暂停时间
 
-	G1 Garbage First
+	G1 Garbage First 垃圾优先
 		区域化分代式
-			将内存划分多个区域 region
+			将内存划分多个区域 region 哪个区域垃圾多先回收哪个
 
