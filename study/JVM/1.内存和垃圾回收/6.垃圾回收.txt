@@ -147,10 +147,24 @@ STW stop the world
 	
 	CMS Concurrent-Mark-Sweep 并发-标记-清除 老年代收集器
 		回收线程与用户线程同时工作，关注GC暂停时间、低延迟优先
+		没有空间碎片
 		使用场景
 			最小化暂停时间
 
 	G1 Garbage First 垃圾优先
-		区域化分代式
-			将内存划分多个区域 region 哪个区域垃圾多先回收哪个
+		特点
+			并行与并发兼具
+			分代收集
+				G1仍然是分代型垃圾回收器，但他把空间划分为多个region，region可以充当Eden、Survivor、Old...逻辑上包含新老年代，但空间上不连续。
+			空间整合
+				G1 Region之间是复制算法，但从整体上可看作标记压缩，不会有空间碎片
+			可预测的停顿时间模型
+		比较重要的参数
+			-XX: +UseG1GC JDK8及之前需要显示声明、JDK9之后为默认收集器
+			-XX:G1HeapRegionSize 每个region大小 默认内存1/2000
+			-XX:ConcGCThreads 并发标记线程数
+		使用场景:
+			针对具有低延迟、大内存、多处理器的机器。(普通大小的堆表现平平)
 
+		region分区
+			化整为零，跳出原先的模式局限
