@@ -167,4 +167,16 @@ STW stop the world
 			针对具有低延迟、大内存、多处理器的机器。(普通大小的堆表现平平)
 
 		region分区
-			化整为零，跳出原先的模式局限
+			化整为零，跳出原先的模式局限，现在的互联网项目一般用G1
+GC日志分析
+	日志打印
+		-XX:+PrintGC 输出日志信息
+		-XX:+PrintGCDetails
+		-XX:+PrintGCTimeStamps GC的时间戳
+		-XX:+PrintGCDateStamps GC的时间戳
+	GC查看工具
+		GCViwer、GCEasy 等
+
+未来
+	ZGC 实验性阶段
+	未来实现可并发的标记-压缩算法，一旦并发就可以解决STW(非百分百解决)，已低延迟为首要目标
