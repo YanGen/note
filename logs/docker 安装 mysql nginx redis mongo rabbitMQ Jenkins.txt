@@ -40,3 +40,28 @@ rabbitMQ
 	docker run -d --name rabbitmq -v /docker/rabbitmq/etc/rabbitmq:/etc/rabbitmq -v /docker/rabbitmq/lib/rabbitmq:/var/lib/rabbitmq -v /docker/rabbitmq/log/rabbitmq/:/var/log/rabbitmq -e RABBITMQ_DEFAULT_USER=root -e RABBITMQ_DEFAULT_PASS=ud@rabbitmq  -p 1884:1883 -p 5673:5672 -p 15673:15672 -p 25673:25672 -p 61614:61613 rabbitmq:managem	
 
 	guest ud@rabbitmq
+
+Jenkins
+	docker pull jenkins
+	// 重要：此目录需要设置权限，否则启动容器报错权限错误 1000:1000 是UID和GID
+	chown -R 1000:1000 /docker/jenkins
+	//启动
+	docker run -d -p 8000:8080 -p 50000:50000 -v /docker/jenkins:/var/jenkins_home --name jenkins --privileged=true  -u root jenkins
+	ps:
+		-p : 映射端口，宿主机端口：容器端口
+		-v : 挂载，宿主机目录：容器目录
+		--name : 自定义容器名
+		-u : 权限用户名
+		--privileged : 使用该参数，container内的root拥有真正的root权限，否则，container（容器）内的root只是外部的一个普通用户权限，privileged启动的容器可以看到很多host上的设备，并且可以执行mount，甚至允许你在docker容器内启动docker容器。
+	//此时挂载目录有了文件 修改default.json、hudson.model.UpdateCenter.xml配置文件
+	修改hudson.model.UpdateCenter.xml配置文件
+		默认路径
+		http://updates.jenkins-ci.org/update-center.json
+		改成路径
+		http://mirror.xmission.com/jenkins/updates/update-center.json
+	修改 /updates/default.json 配置文件(如果出现界面卡住)
+		默认路径
+		"connectionCheckUrl":"http://www.google.com/" 
+		改为路径
+		"connectionCheckUrl":"http://www.baidu.com/"
+

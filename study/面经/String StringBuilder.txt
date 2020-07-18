@@ -52,6 +52,8 @@ StringBuider
 	在需要进行大量str 拼接的时候，StringBuilder比String的效率高的多，但StringBuilder线程不安全，StringBuilder底层是char数组默认长度16，若长度不够则需进行内部扩容，实际开发中如果基本确定字符串最终拼接长度不高于某个限定值可以预设初始长度，这样可以节约在扩容时所需要的耗时，意思是指定的初始大小合理的话，效率将会高些。
 	ps: 默认大小参数capacity,new StringBuilder(capacity);指定
 
+StringBuffer和StringBuilder有什么区别，底层实现上呢？
+	StringBuffer线程安全，StringBuilder线程不安全，底层实现上的话，StringBuffer其实就是比StringBuilder多了Synchronized修饰符。
 intern():
 	判断字符串常量池是否存在该串的值如果在则直接返回地址，如果不在则在常量池新开辟一份并返回地址。
 	String s8 = s6.intern();

@@ -1,3 +1,12 @@
+数据库 dml、ddl、dcl
+	DML（Data Manipulation Lanaguage，数据操纵语言）
+		SELECT、INSERT、UPDATE和DELETE，主要是用来对数据进行CRUD操作。
+	DDL（Data Definition Language，数据定义语言）
+		CREATE、ALTER、DROP等。DDL主要是用在定义或改变表的结构、数据类型、表之间的链接或约束等初始化工作上。
+	DCL（Data Control Language，数据库控制语言）
+		DCL是用来设置或更改数据库用户或角色权限的语句，包括GRANT、DENY、REVOKE等语句，这个层面应该主要是DBA做的事情了。
+
+
 Mysql 逻辑分层 由上往下
 	连接层
 	服务层 
