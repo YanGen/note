@@ -1,0 +1,21 @@
+gitlab 下载地址 https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/
+
+安装依赖软件
+	yum -y install policycoreutils openssh-server openssh-clients postfix
+设置postfix开机自启
+	systemctl enable postfix && systemctl start postfix
+
+安装gitlab
+	rpm -i 'gitlab....rpm 路径'
+
+编辑配置文件/etc/gitlab/gitlab.rb
+	修改external_url为 external_url 'http://机器ip:机器port'
+
+运行
+	gitlab-ctl reconfigure 重置配置生效
+	gitlab-ctl start 启动
+	gitlab-ctl stop 停止
+
+访问
+	ip:port
+	初始账户: root 密码: 安装过程会显示，最新的第一次访问会提示修改密码

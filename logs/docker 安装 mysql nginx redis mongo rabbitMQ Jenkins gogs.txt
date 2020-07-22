@@ -65,3 +65,6 @@ Jenkins
 		改为路径
 		"connectionCheckUrl":"http://www.baidu.com/"
 
+gogs
+	docker pull gogs/gogs
+	docker run -d -p 10022:22 -p 3000:3000 --name=gogs -v /opt/gogs/:/docker/gogs gogs/gogs

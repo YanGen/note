@@ -1,0 +1,8 @@
+cmake
+boost
+scipy
+wheel
+dlib
+	ps:dlib要么找编译好的要么已有c++环境手动编译
+face_recognition_models 训练好的模型
+face_recognition
