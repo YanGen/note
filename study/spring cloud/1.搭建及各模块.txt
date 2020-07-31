@@ -6,4 +6,29 @@ cloud
 	3.eureka
 		注册中心
 	4.getaway
-		Spring Cloud Gateway作为Spring Cloud生态系统中的网关，目标是替代Netflix Zuul，其不仅提供统一的路由方式，并且还基于Filer链的方式提供了网关基本的功能，例如：安全、监控/埋点、限流等。
+		组成
+			route 路由
+			predicate 断言
+			filter 过滤
+		例子
+			cloud:
+			    gateway:
+			      #路由
+			      routes:
+
+			        #demo 完整转发路径 = uri + predicates = http://localhost:18003/demo/hello/**
+			        - id: demo #请求 http://localhost:18003/demo/*会转发到demo服务
+			          uri: lb://demo #在服务注册中心找服务名为 demo的服务
+			          # 断言，也是要求，符合断言才能访问
+			          predicates:
+			            - Path= /hello/** #设置路由断言,代理demo的hello路径,更多的断言条件可以查，例如时间、Cookie等
+			          filters:
+				        #过滤器 设置所有的 方法都会自动添加foo=bar
+				        #- AddRequestParameter=key, bar
+				        #当请求路径匹配到/hello/world/HiController/**会将包含hello和后边的字符串接去掉转发，
+				        #StripPrefix=2就代表截取路径的个数，这样配置后当请求/hello/world/HiController/aaa后端匹配到的请求路径，
+				        #就会变成http://localhost:8762/HiController/aaa
+				        - StripPrefix=2
+		
+
+

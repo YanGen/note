@@ -68,3 +68,9 @@ Jenkins
 gogs
 	docker pull gogs/gogs
 	docker run -d -p 10022:22 -p 3000:3000 --name=gogs -v /opt/gogs/:/docker/gogs gogs/gogs
+
+Nacos
+	docker pull nacos/nacos-server
+
+	docker run --env MODE=standalone -e JVM_XMS=256m -e JVM_XMX=256m --name nacos -d -p 8848:8848 nacos/nacos-server
+	我的机器需要限制一下内存 不然太大了
