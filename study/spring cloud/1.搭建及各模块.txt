@@ -1,6 +1,6 @@
 cloud
 	1.parent
-		规定版本
+		统一版本
 	2.common
 		建立公共引用依赖，公共使用的类或方法
 	3.eureka
