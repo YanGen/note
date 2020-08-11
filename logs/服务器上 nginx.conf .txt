@@ -18,18 +18,18 @@ http {
 	
 	fastcgi_intercept_errors on;
 	
-    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-    #                  '$status $body_bytes_sent "$http_referer" '
-    #                  '"$http_user_agent" "$http_x_forwarded_for"';
-    #access_log  logs/access.log  main;
-
-    sendfile        on;
+	#log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+	#                  '$status $body_bytes_sent "$http_referer" '
+	#                  '"$http_user_agent" "$http_x_forwarded_for"';
+	#access_log  logs/access.log  main;
+	
+	sendfile        on;
 	sendfile_max_chunk 512k;#优化
 	tcp_nopush     on;#优化
 	tcp_nodelay    on;#优化
 	
-    #keepalive_timeout  0;
-    keepalive_timeout  65;
+	#keepalive_timeout  0;
+	keepalive_timeout  65;
 	#以下为优化配置
 	server_tokens off;
 	client_header_timeout 30;
@@ -42,7 +42,7 @@ http {
 	open_file_cache_valid 30s;
 	open_file_cache_min_uses 2;
 	
-    gzip  on;
+	gzip  on;
 	gzip_min_length  1k;
 	gzip_buffers     16 8k;
 	gzip_comp_level  4;
@@ -57,23 +57,25 @@ http {
 	fastcgi_busy_buffers_size 128k;
 	fastcgi_temp_file_write_size 128k;
 	
-    server {
-        listen       8080;
-        server_name  localhost;
+	server {
+	    listen       8080;
+	    server_name  localhost;
+	
+	    location / {
+	        root   C:\Running\vue\model\dist;
+	        index  index.html index.htm;
+	    }
 
-        location / {
-            root   C:\Running\vue\model\dist;
-            index  index.html index.htm;
-        }
 
-        
+​        
         error_page   500 502 503 504  /50x.html;
         location = /50x.html {
             root   html;
         }
     }
-	
-	
+
+
+​	
 	server {
 		listen		8081;
 		server_name	localhost;
@@ -82,7 +84,7 @@ http {
 			index	index.html;
 		}
 	}
-
+	
 	server {
 		
 		listen      8082;
@@ -100,19 +102,18 @@ http {
 			root    C:/Running/deploy/altizure/mongo/;
 			autoindex    on;
 		}
-		
-		
-		error_page  404 403 500 502 503 504  /error.html;
 
+		error_page  404 403 500 502 503 504  /error.html;
+	
 		location = /error.html {
 			root   C:\Running\html\error;
 		}
 		location @router{
-            rewrite ^.*$ /index.html last;
-        }
+	        rewrite ^.*$ /index.html last;
+	    }
 	}
 	#配置映射后端项目，以域名区分
-    server {
+	server {
 		listen			19899;
 		server_name		localhost;
 		charset utf-8;
@@ -160,8 +161,8 @@ http {
 			root   C:\Running\html\error;
 		}
 		location @router{
-            rewrite ^.*$ /index.html last;
-        }
+	        rewrite ^.*$ /index.html last;
+	    }
 	}
 	#后端文档测试接口
 	server {
@@ -179,8 +180,8 @@ http {
 			root   C:\Running\html\error;
 		}
 		location @router{
-            rewrite ^.*$ /index.html last;
-        }
+	        rewrite ^.*$ /index.html last;
+	    }
 	}
 
 }
