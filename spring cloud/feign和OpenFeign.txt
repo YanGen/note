@@ -1,4 +1,15 @@
-pring-cloud的服务调用是基于http调用，dubbo是基于RPC调用。使用feign就能实现微服务间的方法调用。其实本质上相当于前端调用http接口,只不过这里用java代码实现，但也因此, 使用feign就可以与其他语言进行http通信了， 就是需要多一步写接口的流程。
+## Feign
+
+Feign是Springcloud组件中的一个轻量级Restful的HTTP服务客户端，Feign内置了Ribbon，用来做客户端负载均衡，去调用服务注册中心的服务。Feign的使用方式是：使用Feign的注解定义接口，调用这个接口，就可以调用服务注册中心的服务
+
+```maven
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-feign</artifactId>
+</dependency>
+```
+
+spring-cloud的服务调用是基于http调用，dubbo是基于RPC调用。使用feign就能实现微服务间的方法调用。其实本质上相当于前端调用http接口,只不过这里用java代码实现，但也因此, 使用feign就可以与其他语言进行http通信了， 就是需要多一步写接口的流程。
 
 spring-cloud的服务调用一般有两种，第一种是ribbon+restTemplate，第二种是feign 
 
@@ -43,3 +54,15 @@ spring-cloud的服务调用一般有两种，第一种是ribbon+restTemplate，�
 	public interface GoodsClientService extends BaseServiceApi<Goods> {
 
 	}
+
+## OpenFeign
+
+OpenFeign是springcloud在Feign的基础上支持了SpringMVC的注解，如@RequestMapping等等。OpenFeign的@FeignClient可以解析SpringMVC的@RequestMapping注解下的接口，并通过动态代理的方式产生实现类，实现类中做负载均衡并调用其他服务。
+
+```maven
+ <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-openfeign</artifactId>
+ </dependency>
+```
+
