@@ -30,3 +30,13 @@
 -------------git-----------------
 代码托管
 	gogs √
+
+文件服务
+
+​	minio
+
+[minio]: https://github.com/minio/minio-java/tree/release/examples	"minio"
+
+
+
+​    

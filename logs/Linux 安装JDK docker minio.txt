@@ -1,13 +1,16 @@
-一、yum一键安装 JDK
-	查看可安装的jdk版本
-		yum -y list java*
-	比如这里安装1.8
-		yum install -y java-1.8.0-openjdk-devel.x86_64
-	安装完成之后，查看安装的jdk版本
-		java -version
+## 一、yum一键安装 JDK
 
-二、centos7安装docker
-	
+​	查看可安装的jdk版本
+​		yum -y list java*
+​	比如这里安装1.8
+​		yum install -y java-1.8.0-openjdk-devel.x86_64
+​	安装完成之后，查看安装的jdk版本
+​		java -version
+
+## 二、centos7安装docker
+
+​	
+
 	1.更新yum：yum update
 	2.gcc：yum -y install gcc
 	3.gcc++：yum -y install gcc-c++
@@ -41,3 +44,20 @@
 	EOF
 	sudo systemctl daemon-reload
 	sudo systemctl restart docker
+## 三、minio
+
+```cmake
+#下载包
+wget https://dl.minio.io/server/minio/release/linux-amd64/minio
+#进入安装目录进行赋权操作
+chmod 777 -R minio
+#设置账号密码
+export MINIO_ACCESS_KEY=administrator
+export MINIO_SECRET_KEY=administrator
+#启动
+./minio server /home/file
+#后台启动
+nohup /usr/local/minio/minio server  /home/file > /home/file/minio.log 2>&1 &
+
+```
+
