@@ -31,12 +31,26 @@
 代码托管
 	gogs √
 
+-------------file-----------------
+
 文件服务
 
 ​	minio
 
 [minio]: https://github.com/minio/minio-java/tree/release/examples	"minio"
 
+-------------search-----------------
 
+全文检索   
 
-​    
+ elasticsearch
+
+-------------cache-----------------
+
+缓存
+
+redis
+
+redisson 针对分布式下锁、对象 
+
+spring cache 整合各种缓存中间件，利用注解简化缓存操作

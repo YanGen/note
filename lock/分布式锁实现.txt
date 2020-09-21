@@ -1,32 +1,32 @@
+```java
 @Autowired
 private StringRedisTemplate stringRedisTemplate;
 
 
 @Transactional(readOnly = false)
     public ResponseResult deductStock(long id) {
+    String deductId = String.valueOf(id);
 
-        String deductId = String.valueOf(id);
+    String clientId = UUID.randomUUID().toString();
 
-        String clientId = UUID.randomUUID().toString();
+    try {
+        Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(deductId, clientId, 30, TimeUnit.SECONDS); // 自动解锁时间要 大于 业务执行时间
+		
+        if (!result) {
+            return ResultGeneratorUtil.getResultFail("没有拿到锁！");
+        }
 
-        try {
-            Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(deductId, clientId, 30, TimeUnit.SECONDS);
-
-            if (!result) {
-                return ResultGeneratorUtil.getResultFail("没有拿到锁！");
+        String objPre = stringRedisTemplate.opsForValue().get(deductId+" stock");
+        if (objPre == null) {
+            Goods goods = getById(id);
+            int stock = goods.getStock();
+            if (stock < 1) {
+                stringRedisTemplate.opsForValue().set(deductId+" stock", 0 + "");
+                return ResultGeneratorUtil.getResultFail("库存不够！");
             }
-
-            String objPre = stringRedisTemplate.opsForValue().get(deductId+" stock");
-            if (objPre == null) {
-                Goods goods = getById(id);
-                int stock = goods.getStock();
-                if (stock < 1) {
-                    stringRedisTemplate.opsForValue().set(deductId+" stock", 0 + "");
-                    return ResultGeneratorUtil.getResultFail("库存不够！");
-                }
-                stock = stock - 1;
-                stringRedisTemplate.opsForValue().set(deductId+" stock", stock +"");
-//            异步upd
+            stock = stock - 1;
+            stringRedisTemplate.opsForValue().set(deductId+" stock", stock +"");
+            //            异步upd
                 return ResultGeneratorUtil.getResultFail("库存-1！");
             } else {
                 int stock = Integer.parseInt(objPre);
@@ -41,3 +41,7 @@ private StringRedisTemplate stringRedisTemplate;
             }
         }
     }
+```
+
+​    
+

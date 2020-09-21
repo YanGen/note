@@ -56,7 +56,7 @@ nginx:
 ​	// 重要：此目录需要设置权限，否则启动容器报错权限错误 1000:1000 是UID和GID
 ​	chown -R 1000:1000 /docker/jenkins
 ​	//启动
-​	docker run -d -p 8000:8080 -p 50000:50000 -v /docker/jenkins:/var/jenkins_home --name jenkins --privileged=true  -u root jenkins
+​	docker run -d -p 8000:8080 -p 50000:50000 -v /docker/jenkins_home:/var/jenkins_home -v /etc/localtime:/etc/localtime --name jenkins --privileged=true  -u root jenkins
 ​	ps:
 ​		-p : 映射端口，宿主机端口：容器端口
 ​		-v : 挂载，宿主机目录：容器目录
@@ -94,4 +94,13 @@ nginx:
 
 ## minio
 
-​	
+## 	elasticsearch
+
+```
+docker run --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e ES_JAVA_OPTS="-Xms64m -Xmx256m" -v /mydata/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml -v /mydata/elasticsearch/data:/usr/share/elasticsearch/data -v /mydata/elasticsearch/plugins:/usr/share/elasticsearch/plugins -d elasticsearch:7.4.2
+
+docker ps 发现并未成功启动，通过docker logs elasticsearch发现无权访问。
+
+chmod -R 777 /mydata/elasticsearch/
+```
+
