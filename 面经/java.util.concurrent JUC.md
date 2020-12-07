@@ -1,3 +1,14 @@
+### CAS
+
+ 	CAS硬件级别保证原子性，如何实现？过程？
+	1.预设 内存值、预期值、新值 三个值
+	2.进行 预期值和内存值 是否相等的判断
+	3.若相等则修改内存值为新值
+	4.若不相等则更新 预期值和新值 
+	5.重复以上操作直到修改成功 结束
+
+
+
 ### LockSupport
 
 一句话 线程等待唤醒机制 wait/notify 的改良加强版
@@ -54,18 +65,29 @@
 
 -   原理：AQs使用一个volatile的int类型的成员变量来表示同步状态，通过内置的FIFO队列来完成资源获取的排队工作将每条要去抢占资源的线程封装成一个Node节点来实现锁的分配，通过CAS完成对State值的修改。
 
-![微信图片_20201129172644](C:\Users\86135\Desktop\github\note\cacheImg\微信图片_20201129172644.png)
+![微信图片_20201129172644](..\cacheImg\微信图片_20201129172644.png)
 
 
 
-### 已ReetrantLock的 lock unlock为切入点学习 AQS
+### 以ReentrantLock的 lock unlock为切入点学习 AQS
 
-<img src="C:\Users\86135\Desktop\github\note\cacheImg\微信图片_20201129182333.png" alt="微信图片_20201129182333" style="zoom:50%;" />
+<img src="..\cacheImg\微信图片_20201129182333.png" alt="微信图片_20201129182333" style="zoom:50%;" />
 
-ReentrantLock内部类Sync继承抽象类AQS，本质是对AQS的封装。
+ReentrantLock内部类Sync继承抽象类AQS，本质是对AQS抽象层的实现(落地)，而Sync的两个子类 NonfairSync和FairSync分别实现公平非公平锁。
 
-###### 整个ReentrantLock的加锁过程，可以分为三个阶段:
+###### 整个ReentrantLock的非公平锁抢占过程，可以分为三个阶段:
 
-1.  尝试加锁;
-2.  加锁失败，线程入队列;
-3.  线程入队列后，进入阻塞状态。
+1.  尝试加锁，成功加锁的线程执行;
+2.  加锁失败，线程自旋的CAS进去入队列(Node链表)，无头节点时必须在第一轮自旋先初始化一个哨兵节点(head指向);
+3.  封装着线程的节点CAS响应修改pre、next(入队)后，进入阻塞状态等待占锁线程唤醒(LockSupport的park、unpark)；
+4.  抢占锁线程执行完成后，设置整体状态为可抢占(锁)并唤醒队列中哨兵后方节点线程；
+5.  将Node中线程提出执行(Node的线程引用置为null)，并删除与哨兵Node的前后指针指向，让哨兵Node的next形成新的哨兵节点，旧哨兵节点等待GC(此时已经不可达)；
+
+###### AQS需要的一些标志属性(关键点)
+
+<img src="..\cacheImg\微信图片_20201201213256.png" alt="微信图片_20201201213256" style="zoom: 33%;" /><img src="..\cacheImg\微信图片_20201201213600.png" alt="微信图片_20201201213600" style="zoom:50%;" /><img src="..\cacheImg\微信图片_20201201213256.png" alt="微信图片_20201201213256" style="zoom: 33%;" /><img src="..\cacheImg\微信图片_20201201213600.png" alt="微信图片_20201201213600" style="zoom:50%;" />
+
+1.  Node节点链表，Node封装如上。
+2.  链表的头尾前后指针。
+3.  exclusiveOwnerThread(在运行线程 由AQS继承自父类)、state(AQS 当前锁占用状态)、waitStatus(每个Node) 三个状态
+
