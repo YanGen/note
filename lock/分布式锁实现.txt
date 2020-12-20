@@ -15,7 +15,6 @@ private StringRedisTemplate stringRedisTemplate;
         if (!result) {
             return ResultGeneratorUtil.getResultFail("没有拿到锁！");
         }
-
         String objPre = stringRedisTemplate.opsForValue().get(deductId+" stock");
         if (objPre == null) {
             Goods goods = getById(id);
