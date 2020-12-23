@@ -2,6 +2,10 @@
 
 注：数据量越大，stream的优势越明显，数据量小，for循环性能最好。
 
+1. 对集合操作简单，使用fori即可。
+2. 如果不是很在意性能，且对集合操作较为复杂，建议适用stream。
+3. 数据量大，考虑使用多线程时，且数据之间没有内在联系，推荐stream。
+
 | Stream操作分类 |                                                         |                                                              |
 | -------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
 | 中间操作       | 无状态                                                  | unordered() filter() map() mapToInt() mapToLong() mapToDouble() flatMap() flatMapToInt() flatMapToLong() flatMapToDouble() peek() |
@@ -11,9 +15,13 @@
 
 　　
 
-Stream上的所有操作分为两类：中间操作和结束操作，中间操作只是一种标记，只有结束操作才会触发实际计算。中间操作又可以分为无状态的(*Stateless*)和有状态的(*Stateful*)，无状态中间操作是指元素的处理不受前面元素的影响，而有状态的中间操作必须等到所有元素处理之后才知道最终结果。
+  无状态：指元素的处理不受之前元素的影响；
 
-比如排序是有状态操作，在读取所有元素之前并不能确定排序结果；结束操作又可以分为短路操作和非短路操作，短路操作是指不用处理全部元素就可以返回结果，比如*找到第一个满足条件的元素*。之所以要进行如此精细的划分，是因为底层对每一种情况的处理方式不同。
+  有状态：指该操作只有拿到所有元素之后才能继续下去。
+
+  非短路操作：指必须处理所有元素才能得到最终结果；
+
+  短路操作：指遇到某些符合条件的元素就可以得到最终结果，如 A || B，只要A为true，则无需判断B的结果。
 
 ### **常用中间件**
 
@@ -96,6 +104,7 @@ public class TestMap {
         List<String> nameList=persionList.stream().map(Person::getName).collect(Collectors.toList());
         System.out.println(nameList.toString());
 
+       
         //2、只取出该集合中所有id组成一个新集合
         List<Integer> idList=persionList.stream().mapToInt(Person::getId).boxed().collect(Collectors.toList());
         System.out.println(idList.toString());
