@@ -57,7 +57,7 @@ export MINIO_SECRET_KEY=administrator
 #启动
 ./minio server /home/file
 #后台启动
-nohup /usr/local/minio/minio server  /home/file > /home/file/minio.log 2>&1 &
+nohup /docker/minio/minio server --address 0.0.0.0:40001 /docker/minio/data > /docker/minio/minio.log 2>&1 &
 
 ```
 
