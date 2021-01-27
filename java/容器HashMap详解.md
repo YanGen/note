@@ -120,7 +120,27 @@
    static final int MIN_TREEIFY_CAPACITY = 64;
    // 扩容阈值，当 HashMap 的个数达到该值，触发扩容。
    int threshold;
+   // 修改的次数
+   transient int modCount;
    ```
+
+   对于**modCount**
+
+   ​		在迭代迭代或增强for循环遍历HashMap、ArrayList等非同步容器过程中，若对容器进行其他操作，如多线程、一边循环一边remove，会导致**ConcurrentModificationException**异常迭代失败。原因就在于这个modCount，modCount会在add()、remove()的时候自增，为了保证对容器的遍历过程中不变其他操作更改，如果本次操作的预期值(在迭代器Iterator中是expectedModCount)不相等，则证明遍历过程容器被修改，从而使迭代失败，这也就是**Fail-Fast原则**。
+
+   ###### 为什么HashMap modCount不加volatile关键字？
+
+   ​		这里存在一个过度设计问题，首先，modcount的存在就只是为了提醒用户，此次迭代失败，因为别的线程对这个list做出了结构性的改变，并且抛出异常，作为所谓的`fast-fail`机制，**它并没有提供任何保证**，所以，为什么要付出高昂的代价(volatile虽然是轻量级锁)用于这样一个非线程异常的类？换句话说，一个ArrayList对象，能够被两个线程同时访问到。那这个设计本身就是不合理的。
+
+   ######  ArrayList是非线程安全的容器，换成Vector就没问题了？
+
+   ​		实际上换成Vector还是会出现这种错误。原因在于，虽然Vector的方法采用了synchronized进行了同步，但是实际上通过Iterator访问的情况下，每个线程里面返回的是不同的iterator，也即是说expectedModCount是每个线程私有。假若此时有2个线程，线程1在进行遍历，线程2在进行修改，那么很有可能导致线程2修改后导致Vector中的modCount自增了，线程2的expectedModCount也自增了，但是线程1的expectedModCount没有自增，此时线程1遍历时就会出现expectedModCount不等于modCount的情况了。
+
+   　　因此一般有2种解决办法：
+
+   　　1）在使用iterator迭代的时候使用synchronized或者Lock进行同步；
+
+   　　2）使用并发容器CopyOnWriteArrayList代替ArrayList和Vector。
 
 9. ##### JDK1.7 与 1.8相较
 
@@ -280,4 +300,3 @@
     - 当HashTable存入的value为null时，抛出NullPointerException异常。如果value不为null，而key为空，在执行到int hash = key.hashCode()时同样会抛出NullPointerException异常。
     - ConcurrentHashmap和Hashtable都是支持并发的，这样会有一个问题，当你通过get(k)获取对应的value时，如果获取到的是null时，你无法判断，它是put（k,v）的时候value为null，还是这个key从来没有做过映射。HashMap是非并发的，可以通过contains(key)来做这个判断。而支持并发的Map在调用m.contains（key）和m.get(key),m可能已经不同了。
 
-# 
