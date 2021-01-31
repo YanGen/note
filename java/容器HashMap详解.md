@@ -286,15 +286,124 @@
     }
     ```
 
-12. ##### resize扩容过程
+12. ###### 树化
+
+    - 为什么用红黑树？
+
+      本质上是为了解决数组+链表严重成链导致的查询慢问题。
+
+      - 考虑**二叉搜索树**
+
+        ​	二叉搜索树有左右分布不平衡退化链表的可能。
+
+      - 考虑**二叉平衡树(AVL)**
+
+        ​	二叉平衡树(AVL)虽然能够保持绝对的平衡，但会带来另一个问题，平衡二叉树的定义过于严格，导致每次插入或者删除一个元素之后，都要去维护二叉树整体的平衡，这样产生额外的代价又太大了。
+
+      - **红黑树**
+
+        红黑树把平衡树的平衡定义适度放宽，这样不会有退化链表问题，维护平衡的开销也可以接受，是在上面两者的折中。
+
+    - 
+
+      
+
+13. ##### resize扩容过程
 
     1. **扩容**
 
-       
+       ```java
+       final Node<K,V>[] resize() {
+           Node<K,V>[] oldTab = table;
+           int oldCap = (oldTab == null) ? 0 : oldTab.length;
+           int oldThr = threshold;
+           int newCap, newThr = 0;
+           // 之前的长度大于零 非初始化扩容
+           if (oldCap > 0) {
+               // 旧表长大于最大扩容阈值
+               if (oldCap >= MAXIMUM_CAPACITY) {
+                   threshold = Integer.MAX_VALUE;
+                   return oldTab;
+               }
+               else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY &&
+                        oldCap >= DEFAULT_INITIAL_CAPACITY)
+                   newThr = oldThr << 1; // double threshold
+           }
+           // 没有初始化 oldCap == 0 oldThr >0
+           else if (oldThr > 0) // initial capacity was placed in threshold
+               newCap = oldThr;
+           else {               // zero initial threshold signifies using defaults
+               newCap = DEFAULT_INITIAL_CAPACITY;
+               newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
+           }
+           if (newThr == 0) {
+               float ft = (float)newCap * loadFactor;
+               newThr = (newCap < MAXIMUM_CAPACITY && ft < (float)MAXIMUM_CAPACITY ?
+                         (int)ft : Integer.MAX_VALUE);
+           }
+           // ↑上门代码做了两件事 计算新表长度 newCap 计算新的扩容阈值 newThr
+           
+           threshold = newThr;
+           @SuppressWarnings({"rawtypes","unchecked"})
+               Node<K,V>[] newTab = (Node<K,V>[])new Node[newCap];
+           table = newTab;
+           // rehash
+           if (oldTab != null) {
+               for (int j = 0; j < oldCap; ++j) {
+                   // 临时Node节点
+                   Node<K,V> e;
+                   // 不为null则做操作 同时获取旧表J索引位赋予e
+                   if ((e = oldTab[j]) != null) {
+                       // 逐渐删掉旧表
+                       oldTab[j] = null;
+                       // 没有下一个证明没有成链 单纯是一个节点 直接hash进去就可以了
+                       if (e.next == null)
+                           newTab[e.hash & (newCap - 1)] = e;
+                       // 已经树化了
+                       else if (e instanceof TreeNode)
+                           ((TreeNode<K,V>)e).split(this, newTab, j, oldCap);
+                       // 链表
+                       else { // preserve order
+                           // 尾插法 解决1.7成环
+                           Node<K,V> loHead = null, loTail = null;
+                           Node<K,V> hiHead = null, hiTail = null;
+                           Node<K,V> next;
+                           do {
+                               next = e.next;
+                               if ((e.hash & oldCap) == 0) {
+                                   if (loTail == null)
+                                       loHead = e;
+                                   else
+                                       loTail.next = e;
+                                   loTail = e;
+                               }
+                               else {
+                                   if (hiTail == null)
+                                       hiHead = e;
+                                   else
+                                       hiTail.next = e;
+                                   hiTail = e;
+                               }
+                           } while ((e = next) != null);
+                           if (loTail != null) {
+                               loTail.next = null;
+                               newTab[j] = loHead;
+                           }
+                           if (hiTail != null) {
+                               hiTail.next = null;
+                               newTab[j + oldCap] = hiHead;
+                           }
+                       }
+                   }
+               }
+           }
+           return newTab;
+       }
+       ```
 
     2. **ReHash 迁移**
 
-13. ##### 关于键值 是否允许 null
+14. ##### 关于键值 是否允许 null
 
     - HashMap在put的时候会调用hash()方法来计算key的hashcode值，可以从hash算法中看出当key==null时返回的值为0。因此key为null时，hash算法返回值为0，不会调用key的hashcode方法。
     - 当HashTable存入的value为null时，抛出NullPointerException异常。如果value不为null，而key为空，在执行到int hash = key.hashCode()时同样会抛出NullPointerException异常。
